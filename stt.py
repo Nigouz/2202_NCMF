@@ -2,6 +2,7 @@ import speech_recognition as sr
 import os, mimetypes, argparse
 from argparse import ArgumentParser
 from pydub import AudioSegment
+from collections import Counter
 
 def arg_parser():
     parser = ArgumentParser(description="Testing 123")
@@ -37,7 +38,7 @@ def file_checker():
         if not ext:
             if possible == '.wav' or ext == '.mp3':
                 print('Yeah guess')
-    
+
 
 #Function that does the conversion with Google API (Limitation: Can only convert up to 60 minutes)
 def converter(audiofile):
@@ -52,6 +53,22 @@ def converter(audiofile):
         with open('text.txt','w') as textfile:
             for x in text:
                 textfile.write(x)
+    
+   # counter()
+
+def counter():
+    words = []
+    with open('text.txt', 'r') as f:
+        for line in f:
+            words.extend(line.split())
+    
+    counts = Counter(words)
+    top3 = counts.most_common(3)
+
+    with open('text.txt', 'a') as counted:
+        for value, count in counts.most_common():
+            counted.write(value, count)
+        
 
 def main():
     arguments= arg_parser()
