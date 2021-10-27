@@ -21,16 +21,11 @@ def file_checker():
         #make checking 'case-insenstive' so lower them all first
         ext.lower()
 
-        #If file is not wav file, perform conversion first before calling text conversion func                                                           
-        if ext =='.mp3':
-            mp3file = AudioSegment.from_mp3(arg.f.name)
-            result = mp3file.export("converted.wav", format="wav")
-            converter(result)
-        
-        if ext =='.ogg':
-            
-            oggfile = AudioSegment.from_file(arg.f.name)
-            result = oggfile.export("converted.wav", format="wav")
+        #If file is not wav file, perform conversion first before calling text conversion func.
+        #As long as audio ext is supported by ffmpeg, the audio file can be converted to wav                                                          
+        if ext !='.wav':
+            anotherfile = AudioSegment.from_file(arg.f.name)
+            result = anotherfile.export("converted.wav", format="wav")
             converter(result)
 
         #Speech Recognition only runs with .wav files, so if its already .wav, no conversion has to be done, we can begin the speech recognition
