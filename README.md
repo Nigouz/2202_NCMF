@@ -3,7 +3,7 @@ Just in case we need to update one another regarding our tool
 
 For SpeechRecognition I had to install this in my VSCODE IDE Terminal
 1. pip install SpeechRecognition
-And also install the uploaded FFMPEG zip file in my computer for pydub to work
+And also install the uploaded FFMPEG zip file (Sent in Tele cause idk why they dont allow files larger than 25mb here) in my computer for pydub to work
 Follow this tutorial for the pydub set up [Refer to Pooja Mallam's Answer] & restart your IDE (idk if others work, but for VSCODE, it has to be restarted after his steps)
 2. https://stackoverflow.com/questions/3049572/how-to-convert-mp3-to-wav-in-python#comment3122106_3049572
 
