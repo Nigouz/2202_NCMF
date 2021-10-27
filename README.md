@@ -3,11 +3,11 @@ Just in case we need to update one another regarding our tool
 
 For SpeechRecognition I had to install this in my VSCODE IDE Terminal
 1. pip install SpeechRecognition
-   pip install pydub
-installed the FFMPEG zip file in your computer for the conversion of different extension to .wav 
+2. pip install pydub
+3. Installed the FFMPEG zip file in your computer for the conversion of different extension to .wav 
 
 Follow this tutorial for the pydub set up [Refer to Pooja Mallam's Answer] [only need to follow until step 4; ignore step 5] & restart your IDE (idk if others work, but for VSCODE, it has to be restarted after his steps)
-2. https://stackoverflow.com/questions/3049572/how-to-convert-mp3-to-wav-in-python#comment3122106_3049572
+ https://stackoverflow.com/questions/3049572/how-to-convert-mp3-to-wav-in-python#comment3122106_3049572
 
 How to run the py file in terminal will just be: python stt.py -f (filename) 
 Eg: python stt.py -f welcome.mp3 --> they will convert and save results as text file
