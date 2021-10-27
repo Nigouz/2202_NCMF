@@ -7,6 +7,9 @@ And also install the FFMPEG zip file (Sent in Tele cause idk why they dont allow
 Follow this tutorial for the pydub set up [Refer to Pooja Mallam's Answer] & restart your IDE (idk if others work, but for VSCODE, it has to be restarted after his steps)
 2. https://stackoverflow.com/questions/3049572/how-to-convert-mp3-to-wav-in-python#comment3122106_3049572
 
+How to run the py file in terminal will just be: python stt.py -f (filename) 
+Eg: python stt.py -f welcome.mp3 --> they will convert and save results as text file
+
 Let me know if there are other issues. 
 
 Reference for the stt.py so far
