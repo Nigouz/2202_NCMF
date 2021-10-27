@@ -53,8 +53,7 @@ def converter(audiofile):
         with open('text.txt','w') as textfile:
             for x in text:
                 textfile.write(x)
-    
-   # counter()
+    #counter()
 
 def counter():
     words = []
@@ -63,12 +62,15 @@ def counter():
             words.extend(line.split())
     
     counts = Counter(words)
-    top3 = counts.most_common(3)
-
+    #top3 = counts.most_common(3)
     with open('text.txt', 'a') as counted:
-        for value, count in counts.most_common():
-            counted.write(value, count)
-        
+        counted.write("\n\nTOP 3 MOST COMMON WORDS")
+        for key, value in counts.most_common(3):
+            counted.write("\n")
+            counted.write(key)
+            counted.write(": ")
+            counted.write(str(value))
+
 
 def main():
     arguments= arg_parser()
