@@ -14,4 +14,4 @@ Let me know if there are other issues.
 
 Reference for the stt.py so far
 1. https://github.com/jiaaro/pydub/blob/master/API.markdown - pydub is used to help with the conversion of audio files to wav 
-2. https://sonsuzdesign.blog/2020/08/14/speech-recognition-in-python-the-complete-beginners-guide/ & https://realpython.com/python-speech-recognition/#the-recognizer-class & https://www.thepythoncode.com/article/using-speech-recognition-to-convert-speech-to-text-python- Used to perform the speech recognition portion for 'smaller' audio files 
+2. https://sonsuzdesign.blog/2020/08/14/speech-recognition-in-python-the-complete-beginners-guide/ & https://realpython.com/python-speech-recognition/#the-recognizer-class & https://www.thepythoncode.com/article/using-speech-recognition-to-convert-speech-to-text-python - Used to perform the speech recognition portion for 'smaller' audio files 
