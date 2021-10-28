@@ -49,29 +49,32 @@ def converter(audiofile):
         #convert speech to text
         text=r.recognize_google(audio)
         
+        filename = input("What do you want to name your file? ")
+        filename = filename + ".txt"
+
         #write the text into a file for viewing
-        with open('text.txt','w') as textfile:
+        with open(filename,'w') as textfile:
             for x in text:
                 textfile.write(x)
     #counter()
     #sus_words()
-    options()
+    options(filename)
 
-def options():
+def options(filename):
     while True:
         try: 
             option = int(input("0 - None \n1 - Count top no. of words \n2 - Check for sus words\n3 - Do both options\n\n"))
             if option == 0:
                 break
             elif option == 1:
-                counter()
+                counter(filename)
                 break
             elif option == 2:
-                sus_words()
+                sus_words(filename)
                 break
             elif option == 3:
-                counter()
-                sus_words()
+                counter(filename)
+                sus_words(filename)
                 break
             else:
                 print("Invalid option\n")
@@ -84,19 +87,19 @@ def options():
     
 
 #Function to count the most number of common words that appeared in the audio file
-def counter():
+def counter(filename):
     while True: 
         try:
             ans = int(input("How many Top common words would like to get? eg: 0, 1, 2, 3 \n"))
             if ans == 0:
                 break
             words = []
-            with open('text.txt', 'r') as f:
+            with open(filename, 'r') as f:
                 for line in f:
                     words.extend(line.split())
             
             counts = Counter(words)
-            with open('text.txt', 'a') as counted:
+            with open(filename, 'a') as counted:
                 counted.write("\n\nTOP " + str(ans) + " MOST COMMON WORDS:")
                 for key, value in counts.most_common(ans):
                     counted.write("\n")
@@ -107,24 +110,24 @@ def counter():
         except ValueError:
             print("Please try again!")
 
-def sus_words():
+def sus_words(filename):
     words_list = []
     sus_list = []
     with open('sus.txt', 'r') as file2:
         for line in file2:
             sus_list.extend(line.split())
 
-    with open('text.txt', 'r') as file1:
+    with open(filename, 'r') as file1:
         for line in file1:
             words_list.extend(line.split())
     for i in range(len(words_list)):
         words_list[i] = words_list[i].lower()
     #file = open('text.txt','r')
-    with open('text.txt', 'a') as add:
+    with open(filename, 'a') as add:
         add.write("\n\n" + "Suspicious words found: \n")
     for i in sus_list:
         if i in words_list: 
-            with open('text.txt', 'a') as add:
+            with open(filename, 'a') as add:
                 add.write(i + "\n")
        
 
