@@ -53,8 +53,10 @@ def converter(audiofile):
         with open('text.txt','w') as textfile:
             for x in text:
                 textfile.write(x)
-    counter()
+    #counter()
+    check_sus_words()
 
+#Function to count the most number of common words that appeared in the audio file
 def counter():
     while True: 
         try:
@@ -77,6 +79,21 @@ def counter():
             break
         except ValueError:
             print("Please try again!")
+
+def check_sus_words():
+    words_list = []
+    sus_list = ['power', 'daily', 'email']
+    with open('text.txt', 'r') as file1:
+        for line in file1:
+            words_list.extend(line.split())
+            for i in sus_list:
+                if any(word in words_list for word in sus_list):
+                    with open('text.txt', 'a') as k:
+                        k.write(i)
+         
+         
+
+    
 
 
 def main():
