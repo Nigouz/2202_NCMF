@@ -1,6 +1,7 @@
 #import modules
 import cv2
 import pytesseract
+import csv
 
 
 def pre_processing(image):
