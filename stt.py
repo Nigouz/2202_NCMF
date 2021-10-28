@@ -54,7 +54,34 @@ def converter(audiofile):
             for x in text:
                 textfile.write(x)
     #counter()
-    check_sus_words()
+    #sus_words()
+    options()
+
+def options():
+    while True:
+        try: 
+            option = int(input("0 - None \n1 - Count top no. of words \n2 - Check for sus words\n3 - Do both options\n\n"))
+            if option == 0:
+                break
+            elif option == 1:
+                counter()
+                break
+            elif option == 2:
+                sus_words()
+                break
+            elif option == 3:
+                counter()
+                sus_words()
+                break
+            else:
+                print("Invalid option\n")
+        except ValueError:
+            print("Please try again!\n")
+
+        
+
+        
+    
 
 #Function to count the most number of common words that appeared in the audio file
 def counter():
@@ -80,7 +107,7 @@ def counter():
         except ValueError:
             print("Please try again!")
 
-def check_sus_words():
+def sus_words():
     words_list = []
     sus_list = []
     with open('sus.txt', 'r') as file2:
@@ -94,7 +121,7 @@ def check_sus_words():
         words_list[i] = words_list[i].lower()
     #file = open('text.txt','r')
     with open('text.txt', 'a') as add:
-        add.write("\n\n" + "Found: \n")
+        add.write("\n\n" + "Suspicious words found: \n")
     for i in sus_list:
         if i in words_list: 
             with open('text.txt', 'a') as add:
