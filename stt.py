@@ -82,34 +82,24 @@ def counter():
 
 def check_sus_words():
     words_list = []
-    sus_list = ['power', 'daily', 'email', 'blah blah']
+    sus_list = []
+    with open('sus.txt', 'r') as file2:
+        for line in file2:
+            sus_list.extend(line.split())
+
     with open('text.txt', 'r') as file1:
         for line in file1:
             words_list.extend(line.split())
+    for i in range(len(words_list)):
+        words_list[i] = words_list[i].lower()
     #file = open('text.txt','r')
+    with open('text.txt', 'a') as add:
+        add.write("\n\n" + "Found: \n")
     for i in sus_list:
         if i in words_list: 
             with open('text.txt', 'a') as add:
-                #add.write(" Found Something")
-                add.write("\n")
-                add.write(i)
-
-
-
-    #with open('text.txt', 'r') as file1:
-        #content = file1.read()
-        #for line in file1:
-            #words_list.extend(line.split())
-            #for i in sus_list:
-        #if any(word in content for word in sus_list):
-                #if any(word in words_list):
-            #with open('text.txt', 'a') as k:
-                #k.write()
-         
-         
-
-    
-
+                add.write(i + "\n")
+       
 
 def main():
     arguments= arg_parser()
