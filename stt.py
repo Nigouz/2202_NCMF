@@ -81,15 +81,17 @@ def counter():
             print("Please try again!")
 
 def check_sus_words():
-    words_list = []
+    #words_list = []
     sus_list = ['power', 'daily', 'email']
     with open('text.txt', 'r') as file1:
-        for line in file1:
-            words_list.extend(line.split())
-            for i in sus_list:
-                if any(word in words_list for word in sus_list):
-                    with open('text.txt', 'a') as k:
-                        k.write(i)
+        content = file1.read()
+        #for line in file1:
+            #words_list.extend(line.split())
+            #for i in sus_list:
+        if any(word in content for word in sus_list):
+                #if any(word in words_list):
+            with open('text.txt', 'a') as k:
+                k.write()
          
          
 
