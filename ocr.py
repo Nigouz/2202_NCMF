@@ -2,7 +2,9 @@
 import cv2
 import pytesseract
 import csv
+#from pytesseract import image_to_string
 
+#pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 def pre_processing(image):
     """
@@ -57,7 +59,7 @@ def draw_boxes(image, details, threshold_point):
     """
     total_boxes = len(details['text'])
     for sequence_number in range(total_boxes):
-        if int(details['conf'][sequence_number]) > threshold_point:
+        if float(details['conf'][sequence_number]) > threshold_point:
             (x, y, w, h) = (details['left'][sequence_number], details['top'][sequence_number],
                             details['width'][sequence_number], details['height'][sequence_number])
             image = cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
