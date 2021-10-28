@@ -80,10 +80,6 @@ def options(filename):
                 print("Invalid option\n")
         except ValueError:
             print("Please try again!\n")
-
-        
-
-        
     
 
 #Function to count the most number of common words that appeared in the audio file
