@@ -56,19 +56,27 @@ def converter(audiofile):
     counter()
 
 def counter():
-    words = []
-    with open('text.txt', 'r') as f:
-        for line in f:
-            words.extend(line.split())
-    
-    counts = Counter(words)
-    with open('text.txt', 'a') as counted:
-        counted.write("\n\nTOP 3 MOST COMMON WORDS:")
-        for key, value in counts.most_common(3):
-            counted.write("\n")
-            counted.write(key)
-            counted.write(": ")
-            counted.write(str(value))
+    while True: 
+        try:
+            ans = int(input("How many Top common words would like to get? eg: 0, 1, 2, 3 \n"))
+            if ans == 0:
+                break
+            words = []
+            with open('text.txt', 'r') as f:
+                for line in f:
+                    words.extend(line.split())
+            
+            counts = Counter(words)
+            with open('text.txt', 'a') as counted:
+                counted.write("\n\nTOP " + str(ans) + " MOST COMMON WORDS:")
+                for key, value in counts.most_common(ans):
+                    counted.write("\n")
+                    counted.write(key)
+                    counted.write(": ")
+                    counted.write(str(value))
+            break
+        except ValueError:
+            print("Please try again!")
 
 
 def main():
