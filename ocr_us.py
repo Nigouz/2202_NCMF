@@ -158,7 +158,7 @@ def write_text(formatted_text):
 
 if __name__ == "__main__":
     try:
-        image_file = input("Which image do you want to extract the text from in your current directory? Please inculde the extension (.png, .jpg) \n")
+        image_file = input("Which image do you want to extract the text from in your current directory? Please inculde the extension (.png, .jpg)\n")
         image = cv2.imread(image_file)
         #image = cv2.imread('sample_image.png')
         # calling pre_processing function to perform pre-processing on input image.
@@ -175,3 +175,5 @@ if __name__ == "__main__":
         write_text(arranged_text)
     except KeyboardInterrupt:
         print("\n\nYou ended the program :) ")
+    except cv2.error:
+        print("\n\nFile name could not be found or File extension is not accepted... \nPlease run the program again :( ")
