@@ -16,8 +16,23 @@ def pre_processing(image):
     """
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # converting it to binary image
-    threshold_img = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+    # thresholding is a segementation techniques in computer vision, allowing us to separate the 
+    # foregound from the background of the an image
+    # Thresholding is the binarization of an image. 
+    # 
+    # In general, we seek to convert a grayscale image to a binary image, where the pixels are either 0 or 255.
+    # To construct this thresholded image I simply set my threshold value T=225. 
+    # That way, all pixels p in the logo where p < T are set to 255, and all pixels p >= T are set to 0
+    # 
+    # But in the case that you want your objects to appear as black on a white background, 
+    # be sure to supply the cv2.THRESH_BINARY flag.
+    # threshold_img = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
     # saving image to view threshold image
+    #
+    # But now that we are using Otsu’s method for automatic thresholding, this value of T becomes interesting 
+    # — we do not know what the optimal value of T is ahead of time, 
+    # hence why we are using Otsu’s method to compute it for us.
+
     cv2.imwrite('thresholded.png', threshold_img)
 
     cv2.imshow('threshold image', threshold_img)
