@@ -4,9 +4,9 @@
 import cv2
 import pytesseract
 import csv
-#from pytesseract import image_to_string
+from pytesseract import image_to_string
 
-#pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 def pre_processing(image):
     """
@@ -37,16 +37,16 @@ def pre_processing(image):
     # But now that we are using Otsu’s method for automatic thresholding, this value of T becomes interesting 
     # — we do not know what the optimal value of T is ahead of time, 
     # hence why we are using Otsu’s method to compute it for us.
-
+    
     # saving image to view threshold image
     cv2.imwrite('thresholded.png', threshold_img)
 
-    cv2.imshow('threshold image', threshold_img)
+    #cv2.imshow('threshold image', threshold_img)
     # Maintain output window until
     # user presses a key
-    cv2.waitKey(0)
+    #cv2.waitKey(0)
     # Destroying present windows on screen
-    cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()
 
     return threshold_img
 
@@ -73,7 +73,6 @@ def parse_text(threshold_img):
     # dict_keys(['level', 'page_num', 'block_num', 'par_num', 'line_num', 'word_num', 'left', 'top', 'width', 'height', 'conf', 'text'])
     details = pytesseract.image_to_data(threshold_img, output_type=pytesseract.Output.DICT,
                                         config=tesseract_config, lang='eng')
-    print(details)
     return details
 
 
@@ -100,8 +99,10 @@ def draw_boxes(image, details, threshold_point):
             # draw the rectangle with the given details, color, thickness of the line 
             image = cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
     
+    filename = input("What do you want to name your image? ")
+    filename = filename + ".png"
     # saving image to local
-    cv2.imwrite('captured_text_area.png', image)
+    cv2.imwrite(filename, image)
     # display image
     cv2.imshow('captured text', image)
     # Maintain output window until user presses a key
@@ -146,8 +147,13 @@ def write_text(formatted_text):
     :param formatted_text: list
     :return: None
     """
-    with open('resulted_text.txt', 'w', newline="") as file:
-        csv.writer(file, delimiter=" ").writerows(formatted_text)
+    filename = input("What do you want to name your text file? ")
+    filename = filename + ".txt"
+    #with open(filename,'w', newline="") as textfile:
+     #   for x in formatted_text:
+      #      textfile.write(str(x))
+    with open(filename, 'w', newline="") as file:
+       csv.writer(file, delimiter=" ").writerows(formatted_text)
 
 
 if __name__ == "__main__":
