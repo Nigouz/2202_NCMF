@@ -1,15 +1,12 @@
-#done by marissa & crystal :D
-
 #import modules
 import cv2
 import pytesseract
 import csv
-from pytesseract import image_to_string
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-def pre_processing(image):
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+def image_processing(img):
+    grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # converting it to binary image
     # thresholding is a segementation techniques in computer vision, allowing us to separate the 
     # foregound from the background of the an image
@@ -23,85 +20,79 @@ def pre_processing(image):
     # be sure to supply the cv2.THRESH_BINARY flag.
     
     # [1] cv2.threshold returns a tuple of 2 values, in this case we only want the second value which is the img
-    threshold_img = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-    
+    thresh_img = cv2.threshold(grey_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+
     # But now that we are using Otsu’s method for automatic thresholding, this value of T becomes interesting 
     # — we do not know what the optimal value of T is ahead of time, 
     # hence why we are using Otsu’s method to compute it for us.
     
-    cv2.imwrite('thresholded.png', threshold_img)
-    return threshold_img
+    #cv2.imwrite('threshold.png', thresh_img)
+    return thresh_img
 
-def parse_text(threshold_img):
+def get_data(thresh_img):
     # parameters configured for tesseract usage
-    tesseract_config = r'--oem 3 --psm 6'
-    
+    oem_psm_config = r'--oem 3 --psm 6' 
+
     # image_to_data returns result containing box boundaries, confidences, and other information
     # If you print the details, these are the dictionary keys that will contain relevant details:
     # dict_keys(['level', 'page_num', 'block_num', 'par_num', 'line_num', 'word_num', 'left', 'top', 'width', 'height', 'conf', 'text'])
-    details = pytesseract.image_to_data(threshold_img, output_type=pytesseract.Output.DICT,
-                                        config=tesseract_config, lang='eng')
-    return details
+    data = pytesseract.image_to_data(thresh_img, output_type=pytesseract.Output.DICT, config=oem_psm_config, lang='chi_sim')
+    return data
 
+def draw_rect(img, data, thresh_point):
+    # number of text box(rectangles) based on 'text' key-value
+    num_rect = len(data['text'])
 
-def draw_boxes(image, details, threshold_point):
-    # number of text box based on 'text' key-value
-    total_boxes = len(details['text'])
-
-    for sequence_number in range(total_boxes):
+    for i in range(num_rect):
         # consider only those images whose confidence score is greater than 30
-        if float(details['conf'][sequence_number]) > threshold_point:
+        if float(data['conf'][i]) > thresh_point:
             # take in the values of the sepecific key-value pair
-            (x, y, w, h) = (details['left'][sequence_number], details['top'][sequence_number],
-                            details['width'][sequence_number], details['height'][sequence_number])
+            (x, y, w, h) = (data['left'][i], data['top'][i],
+                            data['width'][i], data['height'][i])
             # draw the rectangle with the given details, color, thickness of the line 
-            image = cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
     
     filename = input("\nWhat do you want to name your image? ")
     filename = filename + ".png"
 
-    cv2.imwrite(filename, image)        # saving image
-    cv2.imshow('captured text', image)  # display image
-    cv2.waitKey(0)                      # wait for user to click a button to close the image
-    cv2.destroyAllWindows()             # close image
+    cv2.imwrite(filename, img)        # saving image
+    print("Captured-text image has been saved to your local folder")
 
-def format_text(details):
-    parse_text = []
-    word_list = []
-    last_word = ''
-    for word in details['text']:
+def append_info(data):
+    read_text = []
+    total_words = []
+    next_word = ''
+    for word in data['text']:
         if word != '':
-            word_list.append(word)
-            last_word = word
+            total_words.append(word)
+            next_word = word
         
         # the end 
         # there's a last word and no more words | last value in the text 
-        if (last_word != '' and word == '') or (word == details['text'][-1]):
+        if (next_word != '' and word == '') or (word == data['text'][-1]):
             # put it in the parse_text list 
-            parse_text.append(word_list)
-            # empty the word list 
-            word_list = []
+            read_text.append(total_words)
+            total_words = []
 
-    return parse_text
+    return read_text
 
-
-def write_text(formatted_text):
+def save_info(text):
     filename = input("\nWhat do you want to name your text file? ")
     filename = filename + ".txt"
     with open(filename, 'w', newline="") as file:
-       csv.writer(file, delimiter=" ").writerows(formatted_text)
-
+       csv.writer(file, delimiter=" ").writerows(text) 
+    
 if __name__ == "__main__":
     try:
         image_file = input("Which image do you want to extract the text from in your current directory? Please inculde the extension (.png, .jpg)\n")
-        image = cv2.imread(image_file)
+        img = cv2.imread(image_file)
         
-        thresholds_image = pre_processing(image)
-        parsed_data = parse_text(thresholds_image)
+        thresholds_img = image_processing(img)        
+        read_data = get_data(thresholds_img)
         accuracy_threshold = 30
-        draw_boxes(thresholds_image, parsed_data, accuracy_threshold)
-        arranged_text = format_text(parsed_data)
-        write_text(arranged_text)
+        draw_rect(thresholds_img, read_data, accuracy_threshold)
+        arranged_text = append_info(read_data)
+        save_info(arranged_text)
     except KeyboardInterrupt:
         print("\n\nYou ended the program :) ")
     except cv2.error:
