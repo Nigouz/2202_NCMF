@@ -99,7 +99,7 @@ def draw_boxes(image, details, threshold_point):
             # draw the rectangle with the given details, color, thickness of the line 
             image = cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
     
-    filename = input("What do you want to name your image? ")
+    filename = input("\nWhat do you want to name your image? ")
     filename = filename + ".png"
     # saving image to local
     cv2.imwrite(filename, image)
@@ -147,7 +147,7 @@ def write_text(formatted_text):
     :param formatted_text: list
     :return: None
     """
-    filename = input("What do you want to name your text file? ")
+    filename = input("\nWhat do you want to name your text file? ")
     filename = filename + ".txt"
     #with open(filename,'w', newline="") as textfile:
      #   for x in formatted_text:
@@ -157,17 +157,21 @@ def write_text(formatted_text):
 
 
 if __name__ == "__main__":
-    # reading image from local
-    image = cv2.imread('sample_image.png')
-    # calling pre_processing function to perform pre-processing on input image.
-    thresholds_image = pre_processing(image)
-    # calling parse_text function to get text from image by Tesseract.
-    parsed_data = parse_text(thresholds_image)
-    # defining threshold for draw box
-    accuracy_threshold = 30
-    # calling draw_boxes function which will draw dox around text area.
-    draw_boxes(thresholds_image, parsed_data, accuracy_threshold)
-    # calling format_text function which will format text according to input image
-    arranged_text = format_text(parsed_data)
-    # calling write_text function which will write arranged text into file
-    write_text(arranged_text)
+    try:
+        image_file = input("Which image do you want to extract the text from in your current directory? Please inculde the extension (.png, .jpg) \n")
+        image = cv2.imread(image_file)
+        #image = cv2.imread('sample_image.png')
+        # calling pre_processing function to perform pre-processing on input image.
+        thresholds_image = pre_processing(image)
+        # calling parse_text function to get text from image by Tesseract.
+        parsed_data = parse_text(thresholds_image)
+        # defining threshold for draw box
+        accuracy_threshold = 30
+        # calling draw_boxes function which will draw dox around text area.
+        draw_boxes(thresholds_image, parsed_data, accuracy_threshold)
+        # calling format_text function which will format text according to input image
+        arranged_text = format_text(parsed_data)
+        # calling write_text function which will write arranged text into file
+        write_text(arranged_text)
+    except KeyboardInterrupt:
+        print("\n\nYou ended the program :) ")
