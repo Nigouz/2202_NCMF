@@ -1,6 +1,9 @@
-# 2202_NCMF
-Just in case we need to update one another regarding our tool
+<h1 align="center">2202_NCMF</h1>
 
+#Project Description
+Done by a group of SIT IS Yr2 Students. This tool is designed to provide translation of Speech to Text and Image to Text. It is a simple to use tool and can be use by anyone.
+
+#Installation Guide for Dependencies
 For SpeechRecognition I had to install this in my VSCODE IDE Terminal
 1. pip install SpeechRecognition
 2. pip install pydub (for the conversion of different extension to .wav)
@@ -17,3 +20,13 @@ Let me know if there are other issues.
 Reference for the stt.py so far
 1. https://github.com/jiaaro/pydub/blob/master/API.markdown - pydub is used to help with the conversion of audio files to wav 
 2. https://sonsuzdesign.blog/2020/08/14/speech-recognition-in-python-the-complete-beginners-guide/ & https://realpython.com/python-speech-recognition/#the-recognizer-class & https://www.thepythoncode.com/article/using-speech-recognition-to-convert-speech-to-text-python - Used to perform the speech recognition portion for 'smaller' audio files 
+
+#How to Use
+
+#Built With 
+- Python
+
+**Chong Fu Min**
+**Crystal Choo Jia Xian**
+**Marissa Krystle Tambou**
+**Nicole Tan Yi Jing**
