@@ -263,6 +263,7 @@ def get_metadata(file):
     #pydub lib - printing information from Metatags
     metadata= mediainfo(file)
     #retrieve file duration to determine whether file minimizing has to be done
+    #Set to global variable so that we can access it in the converter function
     global fileduration
     fileduration=metadata['duration']
     #Write metadata information into a text file & specify utf-8 encoding to prevent anyawy encoding issues || utf-8 selected since it can handle all the chars
