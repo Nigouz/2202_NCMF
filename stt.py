@@ -239,7 +239,9 @@ def counter(filename,number):
 def sus_words(filename):
     words_list = []
     sus_list = []
-    with open('sus.txt', 'r') as file2:
+    sus_textfile = input("Which list of suspicious words do you want to use?\n")
+    sus_textfile = sus_textfile + '.txt'
+    with open(sus_textfile, 'r') as file2:
         for line in file2:
             sus_list.extend(line.split())
 
