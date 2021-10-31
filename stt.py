@@ -88,10 +88,6 @@ def file_checker():
             anotherfile = AudioSegment.from_file(arg.f)
             convertedFile = anotherfile.export("converted.wav", format="wav")
             get_metadata(arg.f)
-
-            #Doubt: Since this is based on when the file was created on the current OS/desktop, I'm not sure if it is considered accurate data. Compared like the m4a files we see earlier today with the legit times (Thoughts?)
-            get_dates(arg.f)
-            #get_datemodified(arg.f.name)
             
             if float(fileduration) > 60.0:  #  if the duration is more than 60sec, split to chunks
                 largefile_minmiser(convertedFile)
@@ -105,7 +101,6 @@ def file_checker():
     #Speech Recognition only runs with .wav files, so if its already .wav, no conversion has to be done, we can begin the speech recognition
         if ext == '.wav':
             get_metadata(arg.f)
-            get_dates(arg.f)
             #get_datemodified(arg.f.name)
             
             if float(fileduration) > 60.0:  #  if the duration is more than 60sec, split to chunks
@@ -248,10 +243,12 @@ def counter(filename,number):
 def sus_words(filename):
     words_list = []
     sus_list = []
-    choice = input("Enter any suspicious word you wish to check? Eg: malware (enter 'no' if nothing to check) \n")
-    if choice != "no":
-        print("")
-        sus_textfile = input("Add any suspicious word into the sus.txt file and enter 'sus'\n")
+    choice = input("Enter any suspicious (word / wordlist) you wish to check against?\n "
+                   "Enter '1' if you have a suspicious word to check against\n"
+                   "Enter '2' if you have your own wordlist to check against (default will be NCMF's wordlist)\n"
+                   "Enter 'no' if you have nothing to check)\n")
+    if choice != 1:
+        sus_textfile = input("Enter sus")
         sus_textfile = sus_textfile + '.txt'
         with open(sus_textfile, 'r') as file2:
             for line in file2:
@@ -332,12 +329,6 @@ def get_metadata(file):
     #print("duration: \n:", duration) 
     print("%s's metadata has been saved into %s.txt in current directory." %(file,file))
 
-
-def get_dates(audiofile):
-    modified = os.path.getmtime(audiofile)
-    created = os.path.getctime(audiofile)
-    print("Date created: " + time.ctime(created))
-    print("Date modified: " + time.ctime(modified))
 
 def image_processing(img):
     grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
