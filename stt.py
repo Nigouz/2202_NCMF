@@ -76,8 +76,8 @@ def file_checker():
 
         global filepath  # created a global so largefile_minimiser() can get the path when creating chunks
         filepath = os.path.basename(path)
-        global filename
-        filename = os.path.splitext(filepath)[0]
+        # global filenameONLY
+        # filenameONLY = os.path.splitext(filepath)[0]
 
         #make checking 'case-insenstive' so lower caps extension 
         ext.lower()
@@ -138,10 +138,10 @@ def converter(audiofile):
         #Run try and catch to prevent printing error code without context if failed to convert speech to text
         try:
             text=r.recognize_google(audio, language='en')
-            filename = input("What do you want to name your file? ")
+            filename = input("What do you want to name your file for the translation result? (exclude extension) ")
             filename = filename + ".txt"
             #Open a new file to write the transcript (name it the same as audio file but with .txt ext)
-            with open("filename",'a',encoding="utf-8") as textfile:
+            with open(filename,'a',encoding="utf-8") as textfile:
                 textfile.write("Transcripted Text:\n")
                 for x in text:
                     textfile.write(x)
@@ -161,10 +161,12 @@ def converter_chunks(): # translate each chunk
         print("Converting", i, ">> .txt file")
         try:
             with sr.AudioFile(i) as src:
+                r.energy_threshold = 400
+                r.adjust_for_ambient_noise(src, duration=0.5)
                 # listen for data
                 audio = r.record(src)
                 # convert speech to text
-                text = r.recognize_google(audio, language='en-US')
+                text = r.recognize_google(audio, language='en')
                 # i added the audio, language='en-IN',show_all=True, show all will show all alternatives
 
                 with open(i+'_translated.txt','w') as textfile:
@@ -172,20 +174,26 @@ def converter_chunks(): # translate each chunk
                         textfile.write(x)
         except sr.UnknownValueError as e:
             print("Audio might be too fast or have too much background noise for conversion to be performed")
-            
     concate_chunks()
 
+
 def concate_chunks():
-    print("\nCombining all your chunk files together, Please wait :) ")
-    print("Translating now . . .")
-    with open("Final_output.txt", "w") as combineFile:
+    arg = arg_parser()
+    filename = input("What do you want to name your file for the translation result? (exclude extension) \n")
+    filename = filename + ".txt"
+    print("\nTranslating now . . . Please wait :)")
+    with open(filename, "a", encoding="utf-8") as combineFile:
         for x in listofchunks_To_translated:  # list of chunks is all the chunk filename created
             with open(x) as infile:
                 contents = infile.read()
                 combineFile.write("Chunk: "+ x)
                 combineFile.write("\n")
                 combineFile.write(contents+"\n\n")
-    print("\nTranslation complete, file is at:", os.getcwd())
+    print("\n%s has been transcribed successfully, %s is at:" % (arg.f,filename), os.getcwd())
+    counter(filename, 3)
+    sus_words(filename)
+
+
 
 def largefile_minmiser(audiofile):
     # Split any file longer than 1 minute
@@ -201,7 +209,8 @@ def largefile_minmiser(audiofile):
     global listofchunks, listofchunks_To_translated
     listofchunks = []  # first, create a list to store these chunks so we can do a loop later
     listofchunks_To_translated = []
-    
+
+    filename = input("What do you want to name your chunks? (just name, exclude extension): ")
     for i, chunk in enumerate(chunks):
         chunk_name = filename+"_chunk{0}.wav".format(i)  #filename is the global variable created in file_checker()
         print("splitting into >>" , chunk_name)
@@ -239,24 +248,29 @@ def counter(filename,number):
 def sus_words(filename):
     words_list = []
     sus_list = []
-    sus_textfile = input("Which list of suspicious words do you want to use?\n")
-    sus_textfile = sus_textfile + '.txt'
-    with open(sus_textfile, 'r') as file2:
-        for line in file2:
-            sus_list.extend(line.split())
+    choice = input("Enter any suspicious word you wish to check? Eg: malware (enter 'no' if nothing to check) \n")
+    if choice != "no":
+        print("")
+        sus_textfile = input("Add any suspicious word into the sus.txt file and enter 'sus'\n")
+        sus_textfile = sus_textfile + '.txt'
+        with open(sus_textfile, 'r') as file2:
+            for line in file2:
+                sus_list.extend(line.split())
 
-    with open(filename, 'r') as file1:
-        for line in file1:
-            words_list.extend(line.split())
-    for i in range(len(words_list)):
-        words_list[i] = words_list[i].lower()
-    #file = open('text.txt','r')
-    with open(filename, 'a') as add:
-        add.write("\n\n" + "Suspicious words found: \n")
-    for i in sus_list:
-        if i in words_list: 
-            with open(filename, 'a') as add:
-                add.write(i + "\n")
+        with open(filename, 'r') as file1:
+            for line in file1:
+                words_list.extend(line.split())
+        for i in range(len(words_list)):
+            words_list[i] = words_list[i].lower()
+        #file = open('text.txt','r')
+        with open(filename, 'a') as add:
+            add.write("\n\n" + "Suspicious words found: \n")
+        for i in sus_list:
+            if i in words_list:
+                with open(filename, 'a') as add:
+                    add.write(i + "\n")
+    else:
+        print("Thank you for using NCMF's Audio/Image Analyser")
        
 #Function to retrieve metadata information       
 def get_metadata(file):        
