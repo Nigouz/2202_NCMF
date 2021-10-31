@@ -18,13 +18,6 @@ https://stackoverflow.com/questions/3049572/how-to-convert-mp3-to-wav-in-python#
 3. pip install opencv-python   
 4. pip install pytesseract
 
-How to run the py file in terminal will just be: python stt.py -f (filename) 
-Eg: python stt.py -f welcome.mp3 --> they will convert and save results as text file
-
-Reference for the stt.py so far
-1. https://github.com/jiaaro/pydub/blob/master/API.markdown - pydub is used to help with the conversion of audio files to wav 
-2. https://sonsuzdesign.blog/2020/08/14/speech-recognition-in-python-the-complete-beginners-guide/ & https://realpython.com/python-speech-recognition/#the-recognizer-class & https://www.thepythoncode.com/article/using-speech-recognition-to-convert-speech-to-text-python - Used to perform the speech recognition portion for 'smaller' audio files 
-
 
 # How to Use
 
