@@ -328,7 +328,6 @@ def sus_words(filename):
     arg = arg_parser()  # To access arg.s variable
     words_list = []
     sus_list = []
-    result_list = []
     # If they specified -s, function will be ran with their file
     if arg.m:
         with open("%s/%s" % (ogcwd, arg.s), 'r') as file2:
