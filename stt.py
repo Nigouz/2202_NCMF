@@ -61,7 +61,8 @@ def file_checker():
         try:
             os.mkdir(folder)        
         except OSError as ee:
-                    print("Folder exists, please try again")
+            print("Folder exists, please try again")
+            return
         
         for file in searchfolder:
             #to determine if item is a file
