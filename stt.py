@@ -1,6 +1,6 @@
 #For STT
 import speech_recognition as sr
-import os, mimetypes, argparse, time
+import os, mimetypes,shutil
 from argparse import ArgumentParser
 from pydub import AudioSegment
 from pydub.utils import mediainfo,make_chunks
@@ -13,14 +13,18 @@ import csv
 #Amend file path according to where you have installed tesseract.exe
 pytesseract.pytesseract.tesseract_cmd = r'C:\Users\nicta\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
 
+#original cwd where script is ran
+global ogcwd
+ogcwd=os.getcwd()
+
 def arg_parser():
     #Create parser
     parser = ArgumentParser(description="Testing 123")
     parser.add_argument('-f', type=str, help= "Specify audio file for conversion")
-    parser.add_argument('-i', type=str, help= "Specify image file for OCR") 
-    parser.add_argument('-s', type=str, default="sus.txt", help= "Specify your own suspicious word list text file") 
-    #parser.add_argument("-d", type= open, help="Specify Disc Image Files to extract audio files and perform conversion on") #Untouched yet
-
+    parser.add_argument('-i', type=str, help= "Specify image file for OCR")
+    parser.add_argument('-s', type=str, default="sus.txt", help="Specify your own suspicious word list text file")
+    parser.add_argument('-m', type=str, help= "FOLDER") 
+    
     #Create Subparser for Word Count + Sus Word Function
     options = parser.add_subparsers(dest="opt",help='help for options subcommands')
     #add the arguments to subparser to run the option check for word counter & sus words
@@ -34,7 +38,69 @@ def arg_parser():
 
 def file_checker():
     arg = arg_parser() #So that we can use the variables from arg_parser function
-    #retrieve file name first
+    #ensure that this argument input is a txt file before program continues running
+
+    global filename_m  # this variable will be used by concate_chunks if user use -m in script
+
+    if arg.s: 
+        path = os.path.realpath(arg.s) #to get file path 
+        name, ext = os.path.splitext(path) #to obtain file name and file extension
+        ext.lower()
+        if ext != '.txt':
+            print("Error! Please only input .txt files when -s is used to specify text file you wish to search suspicious words against.")
+            return
+
+    if arg.m:
+        nonfile=0
+        cwd=os.getcwd()
+        #folder user inputted
+        searchfolder=os.scandir(arg.m)       
+        foldername = input("What do you want to name new folder for translation result (folder will be created in current directory): ")
+        folder = foldername
+        #Ensure folder don't exist before creating new folder to store converted audio files
+        try:
+            os.mkdir(folder)        
+        except OSError as ee:
+                    print("Folder exists, please try again")
+        
+        for file in searchfolder:
+            #to determine if item is a file
+            if os.path.isfile(file):
+                #If item is file, verify that it is an audio file before conversion
+                path = os.path.realpath(file) #to get file path
+                name, ext = os.path.splitext(path) #to obtain file name and file extension 
+                ext.lower()
+                if ext !='.wav':
+                    try:
+                        anotherfile = AudioSegment.from_file(file.name)
+                        convertedFile = anotherfile.export("%s/%s_converted.wav"%(folder,file.name),format="wav")
+                        #get_metadata(file.name) 
+                    except Exception as e:
+                        print("Error! %s is not a valid audio file. Kindly ensure that only valid audio files are in this folder." %file.name)
+                        return
+                        
+                if ext =='.wav':
+                    #get_metadata(file.name) 
+                    shutil.copy(file.name,"%s/%s"%(folder,file.name))
+            else:
+                nonfile+=1                    
+                    
+        if nonfile>=1:
+            print("Kindly ensure that only valid audio files are in this folder. No sub folders should be present.")
+        else:
+            convertedfolder=os.scandir(folder)     
+            for audiofile in convertedfolder:
+                updatepath="%s/%s"%(cwd,folder)
+                #change current dir path to the created folder's path so that we can append all the converted things over there
+                os.chdir(updatepath)
+                get_metadata(audiofile.name) 
+                if float(fileduration) > 60.0:  #  if the duration is more than 60sec, split to chunks
+                    filename_m = audiofile.name  # so concate_chunks can call this if arg.m
+                    largefile_minmiser(audiofile.name)
+                
+                else:                   
+                    converter(audiofile.name)
+               
     #if user is parsing an image file for OCR
     if arg.i:
         try:
@@ -53,7 +119,7 @@ def file_checker():
     
     #if user is parsing text file for the counter function
     if arg.opt:
-        #check file's extension 
+        #check file's extension
         if arg.a:
             path = os.path.realpath(arg.a) #to get file path 
             name, ext = os.path.splitext(path) #to obtain file name and file extension
@@ -62,11 +128,17 @@ def file_checker():
                 counter(arg.a,arg.n)   
                 sus_words(arg.a)
             
-        if arg.b:
+        elif arg.b:
+            path = os.path.realpath(arg.a) #to get file path 
+            name, ext = os.path.splitext(path) #to obtain file name and file extension
+            ext.lower()
             if ext == '.txt':
                 counter(arg.b,arg.n)  
                         
-        if arg.c:
+        elif arg.c:
+            path = os.path.realpath(arg.a) #to get file path 
+            name, ext = os.path.splitext(path) #to obtain file name and file extension
+            ext.lower()
             if ext == '.txt':
                 sus_words(arg.c)
             
@@ -78,7 +150,6 @@ def file_checker():
         filepath = os.path.basename(path)
         # global filenameONLY
         # filenameONLY = os.path.splitext(filepath)[0]
-
         #make checking 'case-insenstive' so lower caps extension 
         ext.lower()
     
@@ -87,22 +158,21 @@ def file_checker():
         if ext !='.wav' and ext != '.txt' and ext != "":
             try:
                 anotherfile = AudioSegment.from_file(arg.f)
-                convertedFile = anotherfile.export("converted.wav", format="wav")
+                convertedFile = anotherfile.export("%s_converted.wav"%arg.f,format="wav")
                 get_metadata(arg.f)
-                print('Enter if ext not wav and txt')
                 if float(fileduration) > 60.0:  #  if the duration is more than 60sec, split to chunks
                     largefile_minmiser(convertedFile)
                 
                 else:
                     #Call transcription function
-                    print('Enter else in if ext not wav and txt')
+                    print("converting file...")
                     converter(convertedFile)
             except Exception as e:
                 print("Error! Inputted file is not a valid audio file.")        
             #converter(convertedFile)
 
     #Speech Recognition only runs with .wav files, so if its already .wav, no conversion has to be done, we can begin the speech recognition
-        if ext == '.wav':
+        elif ext == '.wav':
             get_metadata(arg.f)
             
             if float(fileduration) > 60.0:  #  if the duration is more than 60sec, split to chunks
@@ -116,9 +186,7 @@ def file_checker():
         if not ext:
             converter(arg.f)
 
-        #if ext == '.txt':
-            #print("Only input audio files!")
-#Function that does the conversion with Google API (Limitation: Can only convert up to 60 minutes) #Can test with Google Cloud API
+#Function that does the conversion with Google API (Limitation: Can only convert up to 60 minutes of audio per day)#Can test with Google Cloud API
 def converter(audiofile):
     arg = arg_parser()
     #Call speech recognition lib
@@ -132,33 +200,38 @@ def converter(audiofile):
         r.adjust_for_ambient_noise(src, duration=0.5)
         #listen for data
         audio=r.record(src)
-
-        #Run try and catch to prevent printing error code without context if failed to convert speech to text
+        text=r.recognize_google(audio, language='en')
         try:
-            text=r.recognize_google(audio, language='en')
-            filename = input("What do you want to name your file for the translation result? (exclude extension) ")
-            filename = filename + ".txt"
-            #Open a new file to write the transcript (name it the same as audio file but with .txt ext)
+            if arg.f:
+                filename = "%s.txt"%arg.f
+		
+            if arg.m:
+                filename = "%s.txt"%audiofile
+                #Open a new file to write the transcript (name it the same as audio file but with .txt ext)
             with open(filename,'a',encoding="utf-8") as textfile:
                 textfile.write("Transcripted Text:\n")
                 for x in text:
                     textfile.write(x)
-            print("%s has been transcribed and saved into %s in current directory." %(arg.f,filename))
+                
+            if arg.f:
+                print("%s has been transcribed and saved into %s in current directory." %(arg.f,filename))
+                   
+            if arg.m:
+                print("%s has been transcribed and saved into %s in current directory." %(audiofile,filename))
+            
             #Run the sub function (counter + suspicious words) by default for audio files
-            #By default function will display Top 3 words only (We can tweak this)
             counter(filename,3)
             sus_words(filename)
-        #Unknown Value Error means that the audio content might be unable to be transcribed due to other reasons
-        #except sr.UnknownValueError as e:
-            #print("Audio might be too fast or have too much background noise for conversion to be performed")
-        except Exception as e:
-            print("Error! Audio might be too fast or have too much background noise for conversion to be performed")
-
+        except sr.UnknownValueError as e:
+            print("Error! Audio might be too fast or have too much background noise for conversion to be performed.")
+            
+        
 def converter_chunks(): # translate each chunk
     r = sr.Recognizer()
-    for i in listofchunks:  # previously we stored all the chunk filename in this list
-        print("Converting", i, ">> .txt file")
-        try:
+    try:
+        for i in listofchunks:  # previously we stored all the chunk filename in this list
+            print("Converting", i, ">> .txt file")
+        
             with sr.AudioFile(i) as src:
                 r.energy_threshold = 400
                 r.adjust_for_ambient_noise(src, duration=0.5)
@@ -167,32 +240,34 @@ def converter_chunks(): # translate each chunk
                 # convert speech to text
                 text = r.recognize_google(audio, language='en')
                 # i added the audio, language='en-IN',show_all=True, show all will show all alternatives
-
                 with open(i+'_translated.txt','w') as textfile:
                     for x in text:
                         textfile.write(x)
-        except sr.UnknownValueError as e:
-            print("Audio might be too fast or have too much background noise for conversion to be performed")
-    concate_chunks()
-
-
+        concate_chunks()
+    except sr.UnknownValueError as e:
+        print("Audio might be too fast or have too much background noise for conversion to be performed")
+        
 def concate_chunks():
     arg = arg_parser()
-    filename = input("What do you want to name your file for the translation result? (exclude extension) \n")
+    filename = input("\nWhat do you want to name your file for the translation result? (exclude extension): ")
     filename = filename + ".txt"
     print("\nTranslating now . . . Please wait :)")
     with open(filename, "a", encoding="utf-8") as combineFile:
+        combineFile.write("Transcripted Text:\n")
         for x in listofchunks_To_translated:  # list of chunks is all the chunk filename created
             with open(x) as infile:
                 contents = infile.read()
-                combineFile.write("Chunk: "+ x)
-                combineFile.write("\n")
-                combineFile.write(contents+"\n\n")
-    print("\n%s has been transcribed successfully, %s is at:" % (arg.f,filename), os.getcwd())
-    counter(filename, 3)
-    sus_words(filename)
-
-
+                #combineFile.write("Chunk: "+ x)
+                #combineFile.write("\n")
+                combineFile.write(contents.lower())
+    if arg.f:
+        print("\n%s has been transcribed successfully, %s is at:" % (arg.f, filename), os.getcwd())
+        counter(filename, 3)
+        sus_words(filename)
+    elif arg.m:
+        print("\n%s has been transcribed successfully, %s is at:" % (filename_m, filename), os.getcwd())
+        counter(filename, 3)
+        sus_words(filename)
 
 def largefile_minmiser(audiofile):
     # Split any file longer than 1 minute
@@ -209,7 +284,7 @@ def largefile_minmiser(audiofile):
     listofchunks = []  # first, create a list to store these chunks so we can do a loop later
     listofchunks_To_translated = []
 
-    filename = input("What do you want to name your chunks? (just name, exclude extension): ")
+    filename = input("What do you want to name your chunks? (exclude extension): ")
     for i, chunk in enumerate(chunks):
         chunk_name = filename+"_chunk{0}.wav".format(i)  #filename is the global variable created in file_checker()
         print("splitting into >>" , chunk_name)
@@ -245,35 +320,30 @@ def counter(filename,number):
 
 #Function to search for suspicious words to flag out
 def sus_words(filename):
-    arg=arg_parser() #To access arg.s variable 
+    arg = arg_parser()  # To access arg.s variable
     words_list = []
     sus_list = []
-    
-    #If they specified -s, function will be ran with their file
-    if arg.s:
-        #Make sure its a txt file first
-        path = os.path.realpath(arg.s) #to get file path 
-        name, ext = os.path.splitext(path) #to obtain file name and file extension
-        ext.lower()
-        if ext == ".txt":
-            #Set sus_textfile variable to be user input
-            sus_textfile = arg.s
-            with open(sus_textfile, 'r') as file2:
-                for line in file2:
-                    sus_list.extend(line.split())
-    else:
-        #Use the default sus.txt our tool provides
-        with open('sus.txt', 'r') as file2:
+    result_list = []
+    # If they specified -s, function will be ran with their file
+    if arg.m:
+        with open("%s/%s" % (ogcwd, arg.s), 'r') as file2:
             for line in file2:
                 sus_list.extend(line.split())
+                sus_list = [i.lower() for i in sus_list]
 
-    #File 1 is the transcripted file
+    if arg.f:
+        with open(arg.s, 'r') as file2:
+            for line in file2:
+                sus_list.extend(line.split())
+                sus_list = [i.lower() for i in sus_list]
+
+    # File 1 is the transcripted file
     with open(filename, 'r') as file1:
-            for line in file1:
-                words_list.extend(line.split())
+        for line in file1:
+            words_list.extend(line.split())
     for i in range(len(words_list)):
         words_list[i] = words_list[i].lower()
-    
+
     with open(filename, 'a') as add:
         add.write("\n\n" + "Suspicious words found: \n")
     for i in sus_list:
@@ -281,7 +351,9 @@ def sus_words(filename):
             with open(filename, 'a') as add:
                 add.write(i + "\n")
 
-    print("Thank you for using NCMF's Audio/Image Analyser")
+    #print(words_list)
+    #print("suslist: ",sus_list)
+    print("\nThank you for using NCMF's Audio/Image Analyser")
        
 #Function to retrieve metadata information       
 def get_metadata(file):        
@@ -293,7 +365,7 @@ def get_metadata(file):
     fileduration=metadata['duration']
     #Write metadata information into a text file & specify utf-8 encoding to prevent anyawy encoding issues || utf-8 selected since it can handle all the chars
     #https://stackoverflow.com/questions/16346914/python-3-2-unicodeencodeerror-charmap-codec-cant-encode-character-u2013-i
-    with open("%s_metadata.txt"%file,'w',encoding='utf-8') as textfile:
+    with open("%s/%s_metadata.txt"%(os.getcwd(),file),'w',encoding='utf-8') as textfile:
         textfile.write("To Note:\nProbe score refers to the likelihood of the audio file's extension being changed. The higher the score, the less likely an audio file ext has been changed.\n")
         for keys,values in metadata.items():
         #pydub lib - To retrieve relevant information such as: file name, file type, file size, duration (in seconds and in ts format), probe score, media time base rate
