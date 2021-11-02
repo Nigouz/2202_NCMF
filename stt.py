@@ -44,7 +44,8 @@ def file_checker():
 
     if arg.s: 
         path = os.path.realpath(arg.s) #to get file path 
-        name, ext = os.path.splitext(path) #to obtain file name and file extension
+        
+        ext = os.path.splitext(path)[1] #to obtain file name and file extension
         ext.lower()
         if ext != '.txt':
             print("Error! Please only input .txt files when -s is used to specify text file you wish to search suspicious words against.")
@@ -69,7 +70,7 @@ def file_checker():
             if os.path.isfile(file):
                 #If item is file, verify that it is an audio file before conversion
                 path = os.path.realpath(file) #to get file path
-                name, ext = os.path.splitext(path) #to obtain file name and file extension 
+                ext = os.path.splitext(path)[1]
                 ext.lower()
                 if ext !='.wav':
                     try:
@@ -123,7 +124,7 @@ def file_checker():
         #check file's extension
         if arg.a:
             path = os.path.realpath(arg.a) #to get file path 
-            name, ext = os.path.splitext(path) #to obtain file name and file extension
+            ext = os.path.splitext(path)[1]
             ext.lower()
             if ext == '.txt':
                 counter(arg.a,arg.n)   
@@ -131,14 +132,14 @@ def file_checker():
             
         elif arg.b:
             path = os.path.realpath(arg.a) #to get file path 
-            name, ext = os.path.splitext(path) #to obtain file name and file extension
+            ext = os.path.splitext(path)[1]
             ext.lower()
             if ext == '.txt':
                 counter(arg.b,arg.n)  
                         
         elif arg.c:
             path = os.path.realpath(arg.a) #to get file path 
-            name, ext = os.path.splitext(path) #to obtain file name and file extension
+            ext = os.path.splitext(path)[1]
             ext.lower()
             if ext == '.txt':
                 sus_words(arg.c)
@@ -146,7 +147,7 @@ def file_checker():
     #if user is parsing an audio file for conversion
     if arg.f:
         path = os.path.realpath(arg.f) #to get file path 
-        name, ext = os.path.splitext(path) #to obtain file name and file extension   
+        ext = os.path.splitext(path)[1]
         global filepath  # created a global so largefile_minimiser() can get the path when creating chunks
         filepath = os.path.basename(path)
         # global filenameONLY
