@@ -210,7 +210,7 @@ def converter(audiofile):
                 filename = "%s.txt"%audiofile
                 #Open a new file to write the transcript (name it the same as audio file but with .txt ext)
             with open(filename,'a',encoding="utf-8") as textfile:
-                textfile.write("Transcripted Text:\n")
+                #textfile.write("Transcripted Text:\n")
                 for x in text:
                     textfile.write(x)
                 
@@ -223,6 +223,8 @@ def converter(audiofile):
             #Run the sub function (counter + suspicious words) by default for audio files
             counter(filename,3)
             sus_words(filename)
+        except KeyboardInterrupt:
+            print("\n\nYou ended the program :) ")
         except sr.UnknownValueError as e:
             print("Error! Audio might be too fast or have too much background noise for conversion to be performed.")
             
@@ -245,6 +247,8 @@ def converter_chunks(): # translate each chunk
                     for x in text:
                         textfile.write(x)
         concate_chunks()
+    except KeyboardInterrupt:
+            print("\n\nYou ended the program :) ")
     except sr.UnknownValueError as e:
         print("Audio might be too fast or have too much background noise for conversion to be performed")
         
@@ -254,7 +258,7 @@ def concate_chunks():
     filename = filename + ".txt"
     print("\nTranslating now . . . Please wait :)")
     with open(filename, "a", encoding="utf-8") as combineFile:
-        combineFile.write("Transcripted Text:\n")
+        #combineFile.write("Transcripted Text:\n")
         for x in listofchunks_To_translated:  # list of chunks is all the chunk filename created
             with open(x) as infile:
                 contents = infile.read()
