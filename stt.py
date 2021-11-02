@@ -44,7 +44,6 @@ def file_checker():
 
     if arg.s: 
         path = os.path.realpath(arg.s) #to get file path 
-        
         ext = os.path.splitext(path)[1] #to obtain file name and file extension
         ext.lower()
         if ext != '.txt':
@@ -52,7 +51,7 @@ def file_checker():
             return
 
     if arg.m:
-        nonfile=0
+        nonfile=0 #to see if there are any non files in folder
         cwd=os.getcwd()
         #folder user inputted
         searchfolder=os.scandir(arg.m)       
@@ -68,21 +67,21 @@ def file_checker():
         for file in searchfolder:
             #to determine if item is a file
             if os.path.isfile(file):
-                #If item is file, verify that it is an audio file before conversion
+                #If item is file, try to convert it into .wav for transcribing
                 path = os.path.realpath(file) #to get file path
                 ext = os.path.splitext(path)[1]
                 ext.lower()
                 if ext !='.wav':
                     try:
                         anotherfile = AudioSegment.from_file(file.name)
-                        convertedFile = anotherfile.export("%s/%s_converted.wav"%(folder,file.name),format="wav")
-                        #get_metadata(file.name) 
+                        anotherfile.export("%s/%s_converted.wav"%(folder,file.name),format="wav")
+                        
                     except Exception as e:
                         print("Error! %s is not a valid audio file. Kindly ensure that only valid audio files are in this folder." %file.name)
                         return
                         
                 if ext =='.wav':
-                    #get_metadata(file.name) 
+                    #Copy the file into the new folder 
                     shutil.copy(file.name,"%s/%s"%(folder,file.name))
             else:
                 nonfile+=1                    
@@ -131,14 +130,14 @@ def file_checker():
                 sus_words(arg.a)
             
         elif arg.b:
-            path = os.path.realpath(arg.a) #to get file path 
+            path = os.path.realpath(arg.b) #to get file path 
             ext = os.path.splitext(path)[1]
             ext.lower()
             if ext == '.txt':
                 counter(arg.b,arg.n)  
                         
         elif arg.c:
-            path = os.path.realpath(arg.a) #to get file path 
+            path = os.path.realpath(arg.c) #to get file path 
             ext = os.path.splitext(path)[1]
             ext.lower()
             if ext == '.txt':
@@ -150,9 +149,6 @@ def file_checker():
         ext = os.path.splitext(path)[1]
         global filepath  # created a global so largefile_minimiser() can get the path when creating chunks
         filepath = os.path.basename(path)
-        # global filenameONLY
-        # filenameONLY = os.path.splitext(filepath)[0]
-        #make checking 'case-insenstive' so lower caps extension 
         ext.lower()
     
     #If file is not wav file and txt file, perform conversion first 
@@ -171,7 +167,7 @@ def file_checker():
                     converter(convertedFile)
             except Exception as e:
                 print("Error! Inputted file is not a valid audio file.")        
-            #converter(convertedFile)
+                return
 
     #Speech Recognition only runs with .wav files, so if its already .wav, no conversion has to be done, we can begin the speech recognition
         elif ext == '.wav':
@@ -194,8 +190,8 @@ def converter(audiofile):
     #Call speech recognition lib
     r = sr.Recognizer()
     with sr.AudioFile(audiofile) as src:
-        #energy threshold level is to indicate at which audio level where the audio is considered as speech 
-        #Since we have to take into consideration for background noise so I set it to 350
+        #energy threshold level indicates at which audio level is the audio considered speech 
+        #Since we have to take into consideration for background noise so I set it to 400
         #Value below are considered silence. Default value is 300
         r.energy_threshold=400
         #ambient noise duration means how long will SR take to listen for background noise before adjusting energy treshold
@@ -211,7 +207,7 @@ def converter(audiofile):
                 filename = "%s.txt"%audiofile
                 #Open a new file to write the transcript (name it the same as audio file but with .txt ext)
             with open(filename,'a',encoding="utf-8") as textfile:
-                #textfile.write("Transcripted Text:\n")
+                
                 for x in text:
                     textfile.write(x)
                 
@@ -329,7 +325,7 @@ def sus_words(filename):
     arg = arg_parser()  # To access arg.s variable
     words_list = []
     sus_list = []
-    # If they specified -s, function will be ran with their file
+    
     if arg.m:
         with open("%s/%s" % (ogcwd, arg.s), 'r') as file2:
             for line in file2:
@@ -365,8 +361,7 @@ def get_metadata(file):
     #pydub lib - printing information from Metatags
     metadata= mediainfo(file)
     #retrieve file duration to determine whether file minimizing has to be done
-    #Set to global variable so that we can access it in the filechecker function
-    global fileduration
+    global fileduration #Set to global variable so that we can access it in the filechecker function
     fileduration=metadata['duration']
     #Write metadata information into a text file & specify utf-8 encoding to prevent anyawy encoding issues || utf-8 selected since it can handle all the chars
     #https://stackoverflow.com/questions/16346914/python-3-2-unicodeencodeerror-charmap-codec-cant-encode-character-u2013-i
@@ -417,7 +412,7 @@ def get_metadata(file):
                     textfile.write(key)
                     textfile.write(": ")
                     textfile.write((values[key]))
-    #print("duration: \n:", duration) 
+    
     print("%s's metadata has been saved into %s.txt in current directory." %(file,file))
 
 
@@ -497,9 +492,6 @@ def save_info(text):
     filename = filename + ".txt"
     with open(filename, 'w', newline="",encoding="utf-8") as file:
        csv.writer(file, delimiter=" ").writerows(text)
-#def get_datecreated(audiofile):
- #   created = os.path.getctime(audiofile)
-  #  print("Date created: " + time.ctime(created))
 
 def main():
     arguments= arg_parser()
