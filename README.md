@@ -26,6 +26,12 @@ https://stackoverflow.com/questions/3049572/how-to-convert-mp3-to-wav-in-python#
 # Built With 
 - Python
 
+
+
+
+
+
+
 *This project is done by a group of SIT (Singapore Institute of Technology) Information Security Year 2 Students. The team consist of: 
 
 **Chong Fu Min**
