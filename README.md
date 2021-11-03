@@ -15,8 +15,10 @@ https://stackoverflow.com/questions/3049572/how-to-convert-mp3-to-wav-in-python#
 
 1. Install Tesseract from https://github.com/UB-Mannheim/tesseract/wiki *Take note of the installation path
 2. Add Tesseract installation path to your computer System Environment path
-3. pip install opencv-python   
-4. pip install pytesseract
+3. Replace the Tesseract path in the code with your own installation path
+4. pip install opencv-python   
+5. pip install pytesseract
+6. pip install Pillow
 
 
 # How to Use
