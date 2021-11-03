@@ -12,12 +12,12 @@ import csv
 from PIL import Image
 from PIL.ExifTags import TAGS
 
-colors = {'HEADER' : "\033[95m",
-    'YELLOW' : "\033[93m",
-    'LIGHTBLUE' : "\033[96m",
-    'END' : "\033[0m"}
+colors = {'HEADER': "\033[95m",
+          'YELLOW': "\033[93m",
+          'LIGHTBLUE': "\033[96m",
+          'END': "\033[0m"}
 
-#Amend file path according to where you have installed tesseract.exe
+# Amend file path according to where you have installed tesseract.exe
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # original cwd where script is ran
@@ -37,11 +37,10 @@ def arg_parser():
     # Create Subparser for Word Count + Sus Word Function
     options = parser.add_subparsers(dest="opt", help='help for options subcommands')
     # add the arguments to subparser to run the option check for word counter & sus words
-    parser_options = options.add_parser("o",help="To select options for Word Tracker & Suspicious Words function on text files")
+    parser_options = options.add_parser("o", help="To select options for Word Tracker & Suspicious Words function on text files")
     parser_options.add_argument('-a', type=str, help="To count the top 3 number of words seen & check for suspicious words in file")
     parser_options.add_argument('-b', type=str, help="To count the top 3 number of words seen in file")
     parser_options.add_argument('-c', type=str, help="To check for suspicious words mentioned")
-    
 
     return parser.parse_args()
 
@@ -81,7 +80,7 @@ def file_checker():
                 path = os.path.realpath(file)  # to get file path
                 ext = os.path.splitext(path)[1]
 
-                #global filepath, filenameONLY  # created a global so largefile_minimiser() can get the path when creating chunks
+                global filepath, filenameONLY  # created a global so largefile_minimiser() can get the path when creating chunks
                 filepath = os.path.basename(path)
                 filenameONLY = os.path.splitext(filepath)[0]
                 filename_m = filenameONLY + ext
@@ -132,8 +131,7 @@ def file_checker():
         except KeyboardInterrupt:
             print("\n\nYou ended the program :) ")
         except cv2.error:
-            print(
-                "\n\nFile name could not be found or File extension is not accepted... \nPlease run the program again :( ")
+            print("\n\nFile name could not be found or File extension is not accepted... \nPlease run the program again :( ")
 
     # if user is parsing text file for the counter function
     if arg.opt:
@@ -151,7 +149,7 @@ def file_checker():
             ext = os.path.splitext(path)[1]
             ext.lower()
             if ext == '.txt':
-                counter(arg.b, arg.n)   
+                counter(arg.b, arg.n)
 
         elif arg.c:
             path = os.path.realpath(arg.c)  # to get file path
@@ -164,8 +162,9 @@ def file_checker():
     if arg.f:
         path = os.path.realpath(arg.f)  # to get file path
         ext = os.path.splitext(path)[1]
-        #global filepath  # created a global so largefile_minimiser() can get the path when creating chunks
+
         filepath = os.path.basename(path)
+        filenameONLY = os.path.splitext(filepath)[0]
         ext.lower()
 
         # If file is not wav file and txt file, perform conversion first
@@ -308,7 +307,8 @@ def largefile_minmiser(audiofile):
 
     # filename = input("What do you want to name your chunks? (exclude extension): ")
     for i, chunk in enumerate(chunks):
-        chunk_name = filenameONLY + "_chunk{0}.wav".format(i)  # filenameONLY is the global variable created in file_checker()
+        chunk_name = filenameONLY + "_chunk{0}.wav".format(
+            i)  # filenameONLY is the global variable created in file_checker()
         print("splitting into >>", chunk_name)
         chunk.export(chunk_name, format="wav")
         listofchunks.append(chunk_name)
@@ -542,27 +542,29 @@ def metadata_img(filename):
             file1.write(f"{tag:25}: {data} \n")
     print("Image metadata has been saved to your local folder")
 
+
 def logo():
-    print ("--------------------------------------")
-    print (" _______   ______   __      __   _____")
-    print ("|    |  | |   ___| |  \    /  | |   __|")
-    print ("|    |  | |  |     |   \  /   | |  |_")
-    print ("|  |    | |  |___  |    \/    | |   _|")
-    print ("|__|____| |______| |__|\__/|__| |__|")
-    print ()
-    print ("--------------------------------------")
-    print ("[!] -h for Help, o -h for Options Help")
-    print ("[!] Examples:")
-    print ("# python ncmf.py -i sample_image.png")
-    print ("# python ncmf.py -f music.mp3")
-    print ("# python ncmf.py -f music.ogg -i sample_image.jpg")
-    print ("# python ncmf.py -f sample_image o -n 5")
-    print ("--------------------------------------")
-    print ("*Note: No metadata will be returned for a non jpg file")
+    print("--------------------------------------")
+    print(" _______   ______   __      __   _____")
+    print("|    |  | |   ___| |  \    /  | |   __|")
+    print("|    |  | |  |     |   \  /   | |  |_")
+    print("|  |    | |  |___  |    \/    | |   _|")
+    print("|__|____| |______| |__|\__/|__| |__|")
+    print()
+    print("--------------------------------------")
+    print("[!] -h for Help, o -h for Options Help")
+    print("[!] Examples:")
+    print("# python ncmf.py -i sample_image.png")
+    print("# python ncmf.py -f music.mp3")
+    print("# python ncmf.py -f music.ogg -i sample_image.jpg")
+    print("# python ncmf.py -f sample_image o -n 5")
+    print("--------------------------------------")
+    print("*Note: No metadata will be returned for a non jpg file")
+
 
 def main():
     logo()
-    arguments= arg_parser()
+    arguments = arg_parser()
     file_checker()
 
 
