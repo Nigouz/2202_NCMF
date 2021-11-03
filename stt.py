@@ -19,7 +19,7 @@ ogcwd=os.getcwd()
 
 def arg_parser():
     #Create parser
-    parser = ArgumentParser(description="Testing 123")
+    parser = ArgumentParser(description="For more information regarding o options, please run 'stt.py o -h' ")
     parser.add_argument('-f', type=str, help= "Specify audio file for conversion")
     parser.add_argument('-i', type=str, help= "Specify image file for OCR")
     parser.add_argument('-s', type=str, default="sus.txt", help="Specify your own suspicious word list text file")
@@ -492,6 +492,7 @@ def save_info(text):
     filename = filename + ".txt"
     with open(filename, 'w', newline="",encoding="utf-8") as file:
        csv.writer(file, delimiter=" ").writerows(text)
+
 
 def main():
     arguments= arg_parser()
