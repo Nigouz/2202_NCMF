@@ -93,7 +93,7 @@ def file_checker():
                         anotherfile.export("%s/%s_converted.wav" % (folder, file.name), format="wav")
 
                     except Exception as e:
-                        print (e)
+                        #print (e)
                         print("Error! %s is not a valid audio file. Kindly ensure that only valid audio files are in this folder." % file.name)
                         return
 
