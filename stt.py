@@ -12,6 +12,11 @@ import csv
 from PIL import Image
 from PIL.ExifTags import TAGS
 
+colors = {'HEADER' : "\033[95m",
+    'YELLOW' : "\033[93m",
+    'LIGHTBLUE' : "\033[96m",
+    'END' : "\033[0m"}
+
 #Amend file path according to where you have installed tesseract.exe
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
@@ -518,9 +523,26 @@ def metadata_img(filename):
             file1.write(f"{tag:25}: {data} \n")
     print("Image metadata has been saved to your local folder")
 
+def logo():
+    print ("--------------------------------------")
+    print (" _______   ______   __      __   _____")
+    print ("|    |  | |   ___| |  \    /  | |   __|")
+    print ("|    |  | |  |     |   \  /   | |  |_")
+    print ("|  |    | |  |___  |    \/    | |   _|")
+    print ("|__|____| |______| |__|\__/|__| |__|")
+    print ()
+    print ("--------------------------------------")
+    print ("[!] -h for Help, o -h for Options Help")
+    print ("[!] Examples:")
+    print ("# python ncmf.py -i sample_image.png")
+    print ("# python ncmf.py -f music.mp3")
+    print ("# python ncmf.py -f music.ogg -i sample_image.jpg")
+    print ("# python ncmf.py -f sample_image o -n 5")
+    print ("--------------------------------------")
+    print ("*Note: No metadata will be returned for a non jpg file")
 
 def main():
-    print("*Note: No metadata will be returned for a non jpg file")
+    logo()
     arguments= arg_parser()
     file_checker()
 
