@@ -21,3 +21,11 @@ rape
 robbery
 riot
 olympus
+assassinate
+terminate
+gang
+drug
+treason
+homicide
+mastermind
+getaway
