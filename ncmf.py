@@ -88,10 +88,12 @@ def file_checker():
                 ext.lower()
                 if ext != '.wav':
                     try:
-                        anotherfile = AudioSegment.from_file(file.name)
+                        #print(path)
+                        anotherfile = AudioSegment.from_file(path)
                         anotherfile.export("%s/%s_converted.wav" % (folder, file.name), format="wav")
 
                     except Exception as e:
+                        print (e)
                         print("Error! %s is not a valid audio file. Kindly ensure that only valid audio files are in this folder." % file.name)
                         return
 
@@ -201,11 +203,6 @@ def file_checker():
             else:
                 converter(arg.f)
 
-        # if ext do not exists, guess file ext (Have not tested this portion)
-        possible = mimetypes.guess_extension(path)
-        if not ext:
-            converter(arg.f)
-
 
 # Function that does the conversion with Google API (Limitation: Can only convert up to 60 minutes of audio per day)#Can test with Google Cloud API
 def converter(audiofile):
@@ -313,8 +310,7 @@ def largefile_minmiser(audiofile):
 
     # filename = input("What do you want to name your chunks? (exclude extension): ")
     for i, chunk in enumerate(chunks):
-        chunk_name = filenameONLY + "_chunk{0}.wav".format(
-            i)  # filenameONLY is the global variable created in file_checker()
+        chunk_name = filenameONLY + "_chunk{0}.wav".format(i)  # filenameONLY is the global variable created in file_checker()
         print("splitting into >>", chunk_name)
         chunk.export(chunk_name, format="wav")
         listofchunks.append(chunk_name)
