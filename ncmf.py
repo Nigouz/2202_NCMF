@@ -37,8 +37,10 @@ def arg_parser():
     # Create Subparser for Word Count + Sus Word Function
     options = parser.add_subparsers(dest="opt", help='help for options subcommands')
     # add the arguments to subparser to run the option check for word counter & sus words
-    parser_options = options.add_parser("o", help="To select options for Word Tracker & Suspicious Words function on text files")
-    parser_options.add_argument('-a', type=str, help="To count the top 3 number of words seen & check for suspicious words in file")
+    parser_options = options.add_parser("o",
+                                        help="To select options for Word Tracker & Suspicious Words function on text files")
+    parser_options.add_argument('-a', type=str,
+                                help="To count the top 3 number of words seen & check for suspicious words in file")
     parser_options.add_argument('-b', type=str, help="To count the top 3 number of words seen in file")
     parser_options.add_argument('-c', type=str, help="To check for suspicious words mentioned")
 
@@ -49,14 +51,13 @@ def file_checker():
     arg = arg_parser()  # So that we can use the variables from arg_parser function
     # ensure that this argument input is a txt file before program continues running
 
-    global filename_m  # this variable will be used by concate_chunks if user use -m in script
-
     if arg.s:
         path = os.path.realpath(arg.s)  # to get file path
         ext = os.path.splitext(path)[1]  # to obtain file name and file extension
         ext.lower()
         if ext != '.txt':
-            print("Error! Please only input .txt files when -s is used to specify text file you wish to search suspicious words against.")
+            print(
+                "Error! Please only input .txt files when -s is used to specify text file you wish to search suspicious words against.")
             return
 
     if arg.m:
@@ -64,7 +65,8 @@ def file_checker():
         cwd = os.getcwd()
         # folder user inputted
         searchfolder = os.scandir(arg.m)
-        foldername = input("What do you want to name new folder for translation result (folder will be created in current directory): ")
+        foldername = input(
+            "What do you want to name new folder for translation result (folder will be created in current directory): ")
         folder = foldername
         # Ensure folder don't exist before creating new folder to store converted audio files
         try:
@@ -83,18 +85,19 @@ def file_checker():
                 global filepath, filenameONLY  # created a global so largefile_minimiser() can get the path when creating chunks
                 filepath = os.path.basename(path)
                 filenameONLY = os.path.splitext(filepath)[0]
-                filename_m = filenameONLY + ext
+                #filename_m = filenameONLY + ext
 
                 ext.lower()
                 if ext != '.wav':
                     try:
-                        #print(path)
+                        # print(path)
                         anotherfile = AudioSegment.from_file(path)
                         anotherfile.export("%s/%s_converted.wav" % (folder, file.name), format="wav")
 
                     except Exception as e:
-                        #print (e)
-                        print("Error! %s is not a valid audio file. Kindly ensure that only valid audio files are in this folder." % file.name)
+                        # print (e)
+                        print(
+                            "Error! %s is not a valid audio file. Kindly ensure that only valid audio files are in this folder." % file.name)
                         return
 
                 if ext == '.wav':
@@ -130,16 +133,17 @@ def file_checker():
             draw_rect(thresholds_img, read_data, accuracy_threshold)
             arranged_text = append_info(read_data)
             filename = save_info(arranged_text)
-            #save_info(arranged_text)
-            #print(filename)
+            # save_info(arranged_text)
+            # print(filename)
             sus_words(filename)
             counter(filename, arg.n)
-                
+
 
         except KeyboardInterrupt:
             print("\n\nYou ended the program :) ")
         except cv2.error:
-            print("\n\nFile name could not be found or File extension is not accepted... \nPlease run the program again :( ")
+            print(
+                "\n\nFile name could not be found or File extension is not accepted... \nPlease run the program again :( ")
 
     # if user is parsing text file for the counter function
     if arg.opt:
@@ -272,8 +276,7 @@ def converter_chunks():  # translate each chunk
 
 def concate_chunks():
     arg = arg_parser()
-    filename = input("\nWhat do you want to name your file for the translation result? (exclude extension): ")
-    filename = filename + ".txt"
+    filename="results.txt"
     print("\nTranslating now . . . Please wait :)")
     with open(filename, "a", encoding="utf-8") as combineFile:
         # combineFile.write("Transcripted Text:\n")
@@ -284,11 +287,11 @@ def concate_chunks():
                 # combineFile.write("\n")
                 combineFile.write(contents.lower())
     if arg.f:
-        print("\n%s has been transcribed successfully, %s is at:" % (arg.f, filename), os.getcwd())
+        print("\n%s has been transcribed successfully, results.txt is at:" % arg.f, os.getcwd())
         counter(filename, 3)
         sus_words(filename)
     elif arg.m:
-        print("\n%s has been transcribed successfully, %s is at:" % (filename_m, filename), os.getcwd())
+        print("\n%s has been transcribed successfully, results.txt is at:" % filename_m, os.getcwd())
         counter(filename, 3)
         sus_words(filename)
 
@@ -298,7 +301,8 @@ def largefile_minmiser(audiofile):
     myaudio = AudioSegment.from_file(audiofile)
     chunk_length_ms = 60000  # pydub calculates in millisec (i have changed it to one minute)
     chunks = make_chunks(myaudio, chunk_length_ms)  # Make chunks of one minute, basically just divide
-
+    global filename_m  # this variable will be used by concate_chunks if user use -m in script
+    filename_m = audiofile
     # Export all of the individual chunks as wav files
     print('\n')
     print("This file is longer than 1 minute and will be split into chunks for analysing")
@@ -310,7 +314,8 @@ def largefile_minmiser(audiofile):
 
     # filename = input("What do you want to name your chunks? (exclude extension): ")
     for i, chunk in enumerate(chunks):
-        chunk_name = filenameONLY + "_chunk{0}.wav".format(i)  # filenameONLY is the global variable created in file_checker()
+        chunk_name = filenameONLY + "_chunk{0}.wav".format(
+            i)  # filenameONLY is the global variable created in file_checker()
         print("splitting into >>", chunk_name)
         chunk.export(chunk_name, format="wav")
         listofchunks.append(chunk_name)
@@ -527,6 +532,7 @@ def save_info(text):
     with open(filename, 'w', newline="", encoding="utf-8") as file:
         csv.writer(file, delimiter=" ").writerows(text)
     return filename
+
 
 def metadata_img(filename):
     image = Image.open(filename)
