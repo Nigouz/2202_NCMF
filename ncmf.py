@@ -27,7 +27,7 @@ ogcwd = os.getcwd()
 
 def arg_parser():
     # Create parser
-    parser = ArgumentParser(description="For more information regarding o options, please run 'stt.py o -h' ")
+    parser = ArgumentParser(description="For more information regarding o options, please run 'ncmf.py o -h' ")
     parser.add_argument('-f', type=str, help="Specify audio file for conversion")
     parser.add_argument('-i', type=str, help="Specify image file for OCR")
     parser.add_argument('-s', type=str, default="sus.txt", help="Specify your own suspicious word list text file")
@@ -127,7 +127,13 @@ def file_checker():
             accuracy_threshold = 30
             draw_rect(thresholds_img, read_data, accuracy_threshold)
             arranged_text = append_info(read_data)
-            save_info(arranged_text)
+            filename = save_info(arranged_text)
+            #save_info(arranged_text)
+            #print(filename)
+            sus_words(filename)
+            counter(filename, arg.n)
+                
+
         except KeyboardInterrupt:
             print("\n\nYou ended the program :) ")
         except cv2.error:
@@ -359,6 +365,11 @@ def sus_words(filename):
             for line in file2:
                 sus_list.extend(line.split())
                 sus_list = [i.lower() for i in sus_list]
+    if arg.i:
+        with open(arg.s, 'r') as file2:
+            for line in file2:
+                sus_list.extend(line.split())
+                sus_list = [i.lower() for i in sus_list]
 
     # File 1 is the transcripted file
     with open(filename, 'r') as file1:
@@ -374,8 +385,6 @@ def sus_words(filename):
             with open(filename, 'a') as add:
                 add.write(i + "\n")
 
-    # print(words_list)
-    # print("suslist: ",sus_list)
     print("\nThank you for using NCMF's Audio/Image Analyser")
 
 
@@ -521,7 +530,7 @@ def save_info(text):
     filename = filename + ".txt"
     with open(filename, 'w', newline="", encoding="utf-8") as file:
         csv.writer(file, delimiter=" ").writerows(text)
-
+    return filename
 
 def metadata_img(filename):
     image = Image.open(filename)
@@ -552,12 +561,13 @@ def logo():
     print("|__|____| |______| |__|\__/|__| |__|")
     print()
     print("--------------------------------------")
-    print("[!] -h for Help, o -h for Options Help")
+    print("[!] -h for Help")
+    print("[!] o -h for Options Help")
     print("[!] Examples:")
     print("# python ncmf.py -i sample_image.png")
-    print("# python ncmf.py -f music.mp3")
-    print("# python ncmf.py -f music.ogg -i sample_image.jpg")
-    print("# python ncmf.py -f sample_image o -n 5")
+    print("# python ncmf.py -r music.mp3")
+    print("# python ncmf.py -r music.ogg -i sample_image.jpg")
+    print("# python ncmf.py -i sample_image.jpg -n 5")
     print("--------------------------------------")
     print("*Note: No metadata will be returned for a non jpg file")
 

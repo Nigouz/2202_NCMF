@@ -11,6 +11,7 @@ arson
 blackmail
 bomb
 bribe
+struggled
 abuse
 violence
 fraud
@@ -19,8 +20,8 @@ kidnap
 murder
 rape
 robbery
+dead
 riot
-olympus
 assassinate
 terminate
 gang
