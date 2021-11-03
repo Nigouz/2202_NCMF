@@ -32,6 +32,7 @@ def arg_parser():
     parser.add_argument('-i', type=str, help="Specify image file for OCR")
     parser.add_argument('-s', type=str, default="sus.txt", help="Specify your own suspicious word list text file")
     parser.add_argument('-m', type=str, help="FOLDER")
+    parser.add_argument('-n', default=3, type=int, help="Specify number of top words you wish to list")
 
     # Create Subparser for Word Count + Sus Word Function
     options = parser.add_subparsers(dest="opt", help='help for options subcommands')
@@ -40,7 +41,7 @@ def arg_parser():
     parser_options.add_argument('-a', type=str, help="To count the top 3 number of words seen & check for suspicious words in file")
     parser_options.add_argument('-b', type=str, help="To count the top 3 number of words seen in file")
     parser_options.add_argument('-c', type=str, help="To check for suspicious words mentioned")
-    parser_options.add_argument('-n', default=3, type=int, help="Specify number of top words you wish to list")
+    
 
     return parser.parse_args()
 
@@ -80,7 +81,7 @@ def file_checker():
                 path = os.path.realpath(file)  # to get file path
                 ext = os.path.splitext(path)[1]
 
-                global filepath, filenameONLY  # created a global so largefile_minimiser() can get the path when creating chunks
+                #global filepath, filenameONLY  # created a global so largefile_minimiser() can get the path when creating chunks
                 filepath = os.path.basename(path)
                 filenameONLY = os.path.splitext(filepath)[0]
                 filename_m = filenameONLY + ext
@@ -150,7 +151,7 @@ def file_checker():
             ext = os.path.splitext(path)[1]
             ext.lower()
             if ext == '.txt':
-                counter(arg.b, arg.n)
+                counter(arg.b, arg.n)   
 
         elif arg.c:
             path = os.path.realpath(arg.c)  # to get file path
@@ -163,7 +164,7 @@ def file_checker():
     if arg.f:
         path = os.path.realpath(arg.f)  # to get file path
         ext = os.path.splitext(path)[1]
-        global filepath  # created a global so largefile_minimiser() can get the path when creating chunks
+        #global filepath  # created a global so largefile_minimiser() can get the path when creating chunks
         filepath = os.path.basename(path)
         ext.lower()
 
@@ -235,7 +236,7 @@ def converter(audiofile):
                 print("%s has been transcribed and saved into %s in current directory." % (audiofile, filename))
 
             # Run the sub function (counter + suspicious words) by default for audio files
-            counter(filename, 3)
+            counter(filename, arg.n)
             sus_words(filename)
         except KeyboardInterrupt:
             print("\n\nYou ended the program :) ")
