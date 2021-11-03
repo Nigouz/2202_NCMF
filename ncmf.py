@@ -12,6 +12,7 @@ import csv
 from PIL import Image
 from PIL.ExifTags import TAGS
 
+
 colors = {'HEADER': "\033[95m",
           'YELLOW': "\033[93m",
           'LIGHTBLUE': "\033[96m",
@@ -37,10 +38,8 @@ def arg_parser():
     # Create Subparser for Word Count + Sus Word Function
     options = parser.add_subparsers(dest="opt", help='help for options subcommands')
     # add the arguments to subparser to run the option check for word counter & sus words
-    parser_options = options.add_parser("o",
-                                        help="To select options for Word Tracker & Suspicious Words function on text files")
-    parser_options.add_argument('-a', type=str,
-                                help="To count the top 3 number of words seen & check for suspicious words in file")
+    parser_options = options.add_parser("o",help="To select options for Word Tracker & Suspicious Words function on text files")
+    parser_options.add_argument('-a', type=str, help="To count the top 3 number of words seen & check for suspicious words in file")
     parser_options.add_argument('-b', type=str, help="To count the top 3 number of words seen in file")
     parser_options.add_argument('-c', type=str, help="To check for suspicious words mentioned")
 
@@ -56,8 +55,7 @@ def file_checker():
         ext = os.path.splitext(path)[1]  # to obtain file name and file extension
         ext.lower()
         if ext != '.txt':
-            print(
-                "Error! Please only input .txt files when -s is used to specify text file you wish to search suspicious words against.")
+            print("Error! Please only input .txt files when -s is used to specify text file you wish to search suspicious words against.")
             return
 
     if arg.m:
@@ -65,8 +63,7 @@ def file_checker():
         cwd = os.getcwd()
         # folder user inputted
         searchfolder = os.scandir(arg.m)
-        foldername = input(
-            "What do you want to name new folder for translation result (folder will be created in current directory): ")
+        foldername = input("What do you want to name new folder for translation result (folder will be created in current directory): ")
         folder = foldername
         # Ensure folder don't exist before creating new folder to store converted audio files
         try:
@@ -82,11 +79,6 @@ def file_checker():
                 path = os.path.realpath(file)  # to get file path
                 ext = os.path.splitext(path)[1]
 
-                global filepath, filenameONLY  # created a global so largefile_minimiser() can get the path when creating chunks
-                filepath = os.path.basename(path)
-                filenameONLY = os.path.splitext(filepath)[0]
-                #filename_m = filenameONLY + ext
-
                 ext.lower()
                 if ext != '.wav':
                     try:
@@ -96,8 +88,7 @@ def file_checker():
 
                     except Exception as e:
                         # print (e)
-                        print(
-                            "Error! %s is not a valid audio file. Kindly ensure that only valid audio files are in this folder." % file.name)
+                        print("Error! %s is not a valid audio file. Kindly ensure that only valid audio files are in this folder." % file.name)
                         return
 
                 if ext == '.wav':
@@ -174,9 +165,6 @@ def file_checker():
     if arg.f:
         path = os.path.realpath(arg.f)  # to get file path
         ext = os.path.splitext(path)[1]
-
-        filepath = os.path.basename(path)
-        filenameONLY = os.path.splitext(filepath)[0]
         ext.lower()
 
         # If file is not wav file and txt file, perform conversion first
@@ -253,9 +241,8 @@ def converter(audiofile):
 def converter_chunks():  # translate each chunk
     r = sr.Recognizer()
     try:
+        print("\n++++ Processing your files now ++++ Please wait :)")
         for i in listofchunks:  # previously we stored all the chunk filename in this list
-            print("Converting", i, ">> .txt file")
-
             with sr.AudioFile(i) as src:
                 r.energy_threshold = 400
                 r.adjust_for_ambient_noise(src, duration=0.5)
@@ -276,8 +263,8 @@ def converter_chunks():  # translate each chunk
 
 def concate_chunks():
     arg = arg_parser()
-    filename="results.txt"
-    print("\nTranslating now . . . Please wait :)")
+    filename = filename_m+".txt"# whatever file name pass to largefileminimiser will be pass here
+    print("\nTranslating now . . . ")
     with open(filename, "a", encoding="utf-8") as combineFile:
         # combineFile.write("Transcripted Text:\n")
         for x in listofchunks_To_translated:  # list of chunks is all the chunk filename created
@@ -287,11 +274,11 @@ def concate_chunks():
                 # combineFile.write("\n")
                 combineFile.write(contents.lower())
     if arg.f:
-        print("\n%s has been transcribed successfully, results.txt is at:" % arg.f, os.getcwd())
+        print("\n%s has been transcribed successfully, %s is at:" % (arg.f,filename), os.getcwd())
         counter(filename, 3)
         sus_words(filename)
     elif arg.m:
-        print("\n%s has been transcribed successfully, results.txt is at:" % filename_m, os.getcwd())
+        print("\n%s has been transcribed successfully, %s is at:" % (filename_m,filename), os.getcwd())
         counter(filename, 3)
         sus_words(filename)
 
@@ -303,23 +290,22 @@ def largefile_minmiser(audiofile):
     chunks = make_chunks(myaudio, chunk_length_ms)  # Make chunks of one minute, basically just divide
     global filename_m  # this variable will be used by concate_chunks if user use -m in script
     filename_m = audiofile
+    filename_forchunk = filename_m.strip('.')
     # Export all of the individual chunks as wav files
     print('\n')
     print("This file is longer than 1 minute and will be split into chunks for analysing")
 
-    global chunk_name  # chunk_name and listofchunks are global because another function using this variable
     global listofchunks, listofchunks_To_translated
     listofchunks = []  # first, create a list to store these chunks so we can do a loop later
     listofchunks_To_translated = []
 
     # filename = input("What do you want to name your chunks? (exclude extension): ")
     for i, chunk in enumerate(chunks):
-        chunk_name = filenameONLY + "_chunk{0}.wav".format(
-            i)  # filenameONLY is the global variable created in file_checker()
+        chunk_name = filename_forchunk + "_chunk{0}.wav".format(i)  # filenameONLY is the global variable created in file_checker()
         print("splitting into >>", chunk_name)
         chunk.export(chunk_name, format="wav")
-        listofchunks.append(chunk_name)
-        listofchunks_To_translated.append(chunk_name + "_translated.txt")
+        listofchunks.append(filename_forchunk)
+        listofchunks_To_translated.append(filename_forchunk + "_translated.txt")
     converter_chunks()
     # print(filename) = "bravestfish" without extension
     # print(chunk_name) = "bravestfish_chunk1.wav"
