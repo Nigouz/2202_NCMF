@@ -556,8 +556,9 @@ def logo():
     print("# python ncmf.py -r music.mp3")
     print("# python ncmf.py -r music.ogg -i sample_image.jpg")
     print("# python ncmf.py -i sample_image.jpg -n 5")
+    print("# python ncmf.py -m folder")
     print("--------------------------------------")
-    print("*Note: No metadata will be returned for a non jpg file")
+    print("*Note: No metadata will be returned for a non jpg file\n")
 
 
 def main():
