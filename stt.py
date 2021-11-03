@@ -9,9 +9,11 @@ from collections import Counter
 import cv2
 import pytesseract
 import csv
+from PIL import Image
+from PIL.ExifTags import TAGS
 
 #Amend file path according to where you have installed tesseract.exe
-pytesseract.pytesseract.tesseract_cmd = r'C:\Users\nicta\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 #original cwd where script is ran
 global ogcwd
@@ -107,6 +109,7 @@ def file_checker():
         try:
             #Verify if file can be read by cv2, if it does, run the OCR
             img=cv2.imread(arg.i)
+            metadata_img(arg.i)
             thresholds_img = image_processing(img)        
             read_data = get_data(thresholds_img)
             accuracy_threshold = 30
@@ -438,6 +441,7 @@ def image_processing(img):
     # hence why we are using Otsu’s method to compute it for us.
     
     #cv2.imwrite('threshold.png', thresh_img)
+    
     return thresh_img
 
 def get_data(thresh_img):
@@ -492,9 +496,31 @@ def save_info(text):
     filename = filename + ".txt"
     with open(filename, 'w', newline="",encoding="utf-8") as file:
        csv.writer(file, delimiter=" ").writerows(text)
+    
+    
+
+def metadata_img(filename):
+    image = Image.open(filename)
+    exifdata = image.getexif()
+
+    if not exifdata:
+        print("No metadata found! :(")
+        return
+
+    for tag_id in exifdata:
+        tag = TAGS.get(tag_id, tag_id)
+        data = exifdata.get(tag_id)
+
+        if isinstance(data, bytes):
+            data = data.decode()
+        img_metadata = filename + "_metadata.txt"
+        with open(img_metadata, 'a') as file1:
+            file1.write(f"{tag:25}: {data} \n")
+    print("Image metadata has been saved to your local folder")
 
 
 def main():
+    print("*Note: No metadata will be returned for a non jpg file")
     arguments= arg_parser()
     file_checker()
 
