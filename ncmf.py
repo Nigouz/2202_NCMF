@@ -124,8 +124,6 @@ def file_checker():
             draw_rect(thresholds_img, read_data, accuracy_threshold)
             arranged_text = append_info(read_data)
             filename = save_info(arranged_text)
-            # save_info(arranged_text)
-            # print(filename)
             sus_words(filename)
             counter(filename, arg.n)
 
@@ -318,12 +316,12 @@ def counter(filename, number):
             if number == 0:
                 break
             words = []
-            with open(filename, 'r') as f:
+            with open(filename, 'r', encoding='utf-8') as f:
                 for line in f:
                     words.extend(line.split())
 
             counts = Counter(words)
-            with open(filename, 'a') as counted:
+            with open(filename, 'a', encoding='utf-8') as counted:
                 counted.write("\n\nTOP " + str(number) + " MOST COMMON WORDS:")
                 for key, value in counts.most_common(number):
                     counted.write("\n")
@@ -357,9 +355,9 @@ def sus_words(filename):
             for line in file2:
                 sus_list.extend(line.split())
                 sus_list = [i.lower() for i in sus_list]
-
+                
     # File 1 is the transcripted file
-    with open(filename, 'r') as file1:
+    with open(filename, 'r', encoding='utf-8') as file1:
         for line in file1:
             words_list.extend(line.split())
     for i in range(len(words_list)):
@@ -436,28 +434,12 @@ def get_metadata(file):
     print("Metadata has been saved in %s.txt in %s." % (file,path))
 
 def image_processing(img):
+    # convert the image to grayscale to allow thresholding
     grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # converting it to binary image
-    # thresholding is a segementation techniques in computer vision, allowing us to separate the
-    # foregound from the background of the an image
-    # Thresholding is the binarization of an image.
-    #
-    # In general, we seek to convert a grayscale image to a binary image, where the pixels are either 0 or 255.
-    # To construct this thresholded image I simply set my threshold value T=225.
-    # That way, all pixels p in the logo where p < T are set to 255, and all pixels p >= T are set to 0
-    #
-    # But in the case that you want your objects to appear as black on a white background,
-    # be sure to supply the cv2.THRESH_BINARY flag.
-
-    # [1] cv2.threshold returns a tuple of 2 values, in this case we only want the second value which is the img
+    # conduct threshold with 2 types of thresholding, in most cases cv2.THRESH_OTSU will be use
+    # cv2.threshold returns a tuple of 2 values, in this case we only want the second value which is the img therefore use [1]
     thresh_img = cv2.threshold(grey_img, 0, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-
-    # But now that we are using Otsu’s method for automatic thresholding, this value of T becomes interesting
-    # — we do not know what the optimal value of T is ahead of time,
-    # hence why we are using Otsu’s method to compute it for us.
-
-    # cv2.imwrite('threshold.png', thresh_img)
-
+    #return threshold image to get the data
     return thresh_img
 
 
@@ -469,6 +451,7 @@ def get_data(thresh_img):
     # If you print the details, these are the dictionary keys that will contain relevant details:
     # dict_keys(['level', 'page_num', 'block_num', 'par_num', 'line_num', 'word_num', 'left', 'top', 'width', 'height', 'conf', 'text'])
     data = pytesseract.image_to_data(thresh_img, output_type=pytesseract.Output.DICT, config=oem_psm_config, lang='eng')
+    #return data to get draw the rectangle box surrounding the text and to obtain the relevant text to input into a text file 
     return data
 
 
