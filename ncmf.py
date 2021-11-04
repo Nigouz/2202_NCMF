@@ -290,7 +290,7 @@ def largefile_minmiser(audiofile):
     chunks = make_chunks(myaudio, chunk_length_ms)  # Make chunks of one minute, basically just divide
     global filename_m  # this variable will be used by concate_chunks if user use -m in script
     filename_m = audiofile
-    filename_forchunk = filename_m.strip('.')
+    filename_forchunk = filename_m.replace('.wav','')
     # Export all of the individual chunks as wav files
     print('\n')
     print("This file is longer than 1 minute and will be split into chunks for analysing")
@@ -304,8 +304,8 @@ def largefile_minmiser(audiofile):
         chunk_name = filename_forchunk + "_chunk{0}.wav".format(i)  # filenameONLY is the global variable created in file_checker()
         print("splitting into >>", chunk_name)
         chunk.export(chunk_name, format="wav")
-        listofchunks.append(filename_forchunk)
-        listofchunks_To_translated.append(filename_forchunk + "_translated.txt")
+        listofchunks.append(chunk_name)
+        listofchunks_To_translated.append(chunk_name + "_translated.txt")
     converter_chunks()
     # print(filename) = "bravestfish" without extension
     # print(chunk_name) = "bravestfish_chunk1.wav"
@@ -385,8 +385,7 @@ def get_metadata(file):
     # Write metadata information into a text file & specify utf-8 encoding to prevent anyawy encoding issues || utf-8 selected since it can handle all the chars
     # https://stackoverflow.com/questions/16346914/python-3-2-unicodeencodeerror-charmap-codec-cant-encode-character-u2013-i
     with open("%s/%s_metadata.txt" % (os.getcwd(), file), 'w', encoding='utf-8') as textfile:
-        textfile.write(
-            "To Note:\nProbe score refers to the likelihood of the audio file's extension being changed. The higher the score, the less likely an audio file ext has been changed.\n")
+        textfile.write("To Note:\nProbe score refers to the likelihood of the audio file being converted from its original format. The higher the score, the less likely an audio file has been converted.\n Do note that manually changing the file extensions will not change the probe score. Audio file needs to be properly converted for probe score to change.\n")
         for keys, values in metadata.items():
             # pydub lib - To retrieve relevant information such as: file name, file type, file size, duration (in seconds and in ts format), probe score, media time base rate
             if keys == "filename":
@@ -432,9 +431,9 @@ def get_metadata(file):
                     textfile.write(key)
                     textfile.write(": ")
                     textfile.write((values[key]))
-
-    print("%s's metadata has been saved into %s.txt in current directory." % (file, file))
-
+    
+    path = os.path.realpath(file)  # to get file path for new file
+    print("Metadata has been saved in %s.txt in %s." % (file,path))
 
 def image_processing(img):
     grey_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -554,9 +553,9 @@ def logo():
     print("[!] Examples:")
     print("# python ncmf.py -i sample_image.png")
     print("# python ncmf.py -r music.mp3")
-    print("# python ncmf.py -r music.ogg -i sample_image.jpg")
+    print("# python ncmf.py -f music.ogg -i sample_image.jpg")
     print("# python ncmf.py -i sample_image.jpg -n 5")
-    print("# python ncmf.py -m folder")
+    print("# python ncmf.py -m foldername")
     print("--------------------------------------")
     print("*Note: No metadata will be returned for a non jpg file\n")
 
