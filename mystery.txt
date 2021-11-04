@@ -1,0 +1,15 @@
+A crime happens with a number of suspects
+A detective appears and begins interviewing the suspects
+The detective finds a key clue
+One of the suspects disappears
+The detective finds another clue
+
+
+TOP 3 MOST COMMON WORDS:
+suspects: 3
+detective: 3
+A: 2
+
+Suspicious words found: 
+disappears
+suspects

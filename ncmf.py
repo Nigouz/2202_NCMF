@@ -355,6 +355,12 @@ def sus_words(filename):
             for line in file2:
                 sus_list.extend(line.split())
                 sus_list = [i.lower() for i in sus_list]
+
+    if arg.opt:
+        with open(arg.s, 'r') as file2:
+            for line in file2:
+                sus_list.extend(line.split())
+                sus_list = [i.lower() for i in sus_list]
                 
     # File 1 is the transcripted file
     with open(filename, 'r', encoding='utf-8') as file1:
@@ -363,7 +369,7 @@ def sus_words(filename):
     for i in range(len(words_list)):
         words_list[i] = words_list[i].lower()
 
-    with open(filename, 'a') as add:
+    with open(filename, 'a', encoding='utf-8') as add:
         add.write("\n\n" + "Suspicious words found: \n")
     for i in sus_list:
         if i in words_list:
