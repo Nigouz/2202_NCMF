@@ -32,7 +32,7 @@ def arg_parser():
     parser.add_argument('-f', type=str, help="Specify audio file for conversion")
     parser.add_argument('-i', type=str, help="Specify image file for OCR")
     parser.add_argument('-s', type=str, default="sus.txt", help="Specify your own suspicious word list text file")
-    parser.add_argument('-m', type=str, help="FOLDER")
+    parser.add_argument('-m', type=str, help="Specify your folder with audio files")
     parser.add_argument('-n', default=3, type=int, help="Specify number of top words you wish to list")
 
     # Create Subparser for Word Count + Sus Word Function
