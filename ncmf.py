@@ -29,10 +29,10 @@ ogcwd = os.getcwd()
 def arg_parser():
     # Create parser
     parser = ArgumentParser(description="For more information regarding o options, please run 'ncmf.py o -h' ")
-    parser.add_argument('-f', type=str, help="Specify audio file for conversion")
+    parser.add_argument('-r', type=str, help="Specify audio file for conversion")
     parser.add_argument('-i', type=str, help="Specify image file for OCR")
     parser.add_argument('-s', type=str, default="sus.txt", help="Specify your own suspicious word list text file")
-    parser.add_argument('-m', type=str, help="FOLDER")
+    parser.add_argument('-m', type=str, help="Specify your foldername containing audio files")
     parser.add_argument('-n', default=3, type=int, help="Specify number of top words you wish to list")
 
     # Create Subparser for Word Count + Sus Word Function
@@ -162,8 +162,8 @@ def file_checker():
                 sus_words(arg.c)
 
     # if user is parsing an audio file for conversion
-    if arg.f:
-        path = os.path.realpath(arg.f)  # to get file path
+    if arg.r:
+        path = os.path.realpath(arg.r)  # to get file path
         ext = os.path.splitext(path)[1]
         ext.lower()
 
@@ -171,9 +171,9 @@ def file_checker():
         # As long as audio ext is supported by ffmpeg, the audio file can be converted to wav
         if ext != '.wav' and ext != '.txt' and ext != "":
             try:
-                anotherfile = AudioSegment.from_file(arg.f)
-                convertedFile = anotherfile.export("%s_converted.wav" % arg.f, format="wav")
-                get_metadata(arg.f)
+                anotherfile = AudioSegment.from_file(arg.r)
+                convertedFile = anotherfile.export("%s_converted.wav" % arg.r, format="wav")
+                get_metadata(arg.r)
                 if float(fileduration) > 60.0:  # if the duration is more than 60sec, split to chunks
                     largefile_minmiser(convertedFile)
 
@@ -187,13 +187,13 @@ def file_checker():
 
         # Speech Recognition only runs with .wav files, so if its already .wav, no conversion has to be done, we can begin the speech recognition
         elif ext == '.wav':
-            get_metadata(arg.f)
+            get_metadata(arg.r)
 
             if float(fileduration) > 60.0:  # if the duration is more than 60sec, split to chunks
-                largefile_minmiser(arg.f)
+                largefile_minmiser(arg.r)
 
             else:
-                converter(arg.f)
+                converter(arg.r)
 
 
 # Function that does the conversion with Google API (Limitation: Can only convert up to 60 minutes of audio per day)#Can test with Google Cloud API
@@ -212,19 +212,19 @@ def converter(audiofile):
         audio = r.record(src)
         text = r.recognize_google(audio, language='en')
         try:
-            if arg.f:
-                filename = "%s.txt" % arg.f
+            if arg.r:
+                filename = "%s.txt" % arg.r
 
             if arg.m:
                 filename = "%s.txt" % audiofile
                 # Open a new file to write the transcript (name it the same as audio file but with .txt ext)
-            with open(filename, 'a', encoding="utf-8") as textfile:
+            with open(filename, 'a', encoding="utf-8") as textfile: 
 
                 for x in text:
                     textfile.write(x)
 
-            if arg.f:
-                print("%s has been transcribed and saved into %s in current directory." % (arg.f, filename))
+            if r:
+                print("%s has been transcribed and saved into %s in current directory." % (arg.r, filename))
 
             if arg.m:
                 print("%s has been transcribed and saved into %s in current directory." % (audiofile, filename))
@@ -273,8 +273,8 @@ def concate_chunks():
                 # combineFile.write("Chunk: "+ x)
                 # combineFile.write("\n")
                 combineFile.write(contents.lower())
-    if arg.f:
-        print("\n%s has been transcribed successfully, %s is at:" % (arg.f,filename), os.getcwd())
+    if arg.r:
+        print("\n%s has been transcribed successfully, %s is at:" % (arg.r,filename), os.getcwd())
         counter(filename, 3)
         sus_words(filename)
     elif arg.m:
@@ -347,7 +347,7 @@ def sus_words(filename):
                 sus_list.extend(line.split())
                 sus_list = [i.lower() for i in sus_list]
 
-    if arg.f:
+    if arg.r:
         with open(arg.s, 'r') as file2:
             for line in file2:
                 sus_list.extend(line.split())
@@ -385,7 +385,7 @@ def get_metadata(file):
     # Write metadata information into a text file & specify utf-8 encoding to prevent anyawy encoding issues || utf-8 selected since it can handle all the chars
     # https://stackoverflow.com/questions/16346914/python-3-2-unicodeencodeerror-charmap-codec-cant-encode-character-u2013-i
     with open("%s/%s_metadata.txt" % (os.getcwd(), file), 'w', encoding='utf-8') as textfile:
-        textfile.write("To Note:\nProbe score refers to the likelihood of the audio file being converted from its original format. The higher the score, the less likely an audio file has been converted.\n Do note that manually changing the file extensions will not change the probe score. Audio file needs to be properly converted for probe score to change.\n")
+        textfile.write("To Note:\nProbe score refers to the likelihood of the audio file being converted from its original format. The higher the score, the less likely an audio file has been converted.\nDo note that manually changing the file extensions will not change the probe score. Audio file needs to be properly converted for probe score to change.\n")
         for keys, values in metadata.items():
             # pydub lib - To retrieve relevant information such as: file name, file type, file size, duration (in seconds and in ts format), probe score, media time base rate
             if keys == "filename":
@@ -485,7 +485,7 @@ def draw_rect(img, data, thresh_point):
             # draw the rectangle with the given details, color, thickness of the line
             img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-    filename = input("\nWhat do you want to name your image? ")
+    filename = input("\nWhat do you want to name your Captured-text image? ")
     filename = filename + ".png"
 
     cv2.imwrite(filename, img)  # saving image
@@ -553,7 +553,7 @@ def logo():
     print("[!] Examples:")
     print("# python ncmf.py -i sample_image.png")
     print("# python ncmf.py -r music.mp3")
-    print("# python ncmf.py -f music.ogg -i sample_image.jpg")
+    print("# python ncmf.py -r music.ogg -i sample_image.jpg")
     print("# python ncmf.py -i sample_image.jpg -n 5")
     print("# python ncmf.py -m foldername")
     print("--------------------------------------")

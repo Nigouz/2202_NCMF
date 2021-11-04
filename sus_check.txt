@@ -1,11 +1,14 @@
 underworld
 treason
+knife
 fraud
 dead
+dagger
 homicide
 robbery
 kill
 burglar
 piracy
 guilty
-
+blood
+drug

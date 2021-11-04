@@ -10,6 +10,7 @@ assault
 arson
 blackmail
 bomb
+blood
 bribe
 struggled
 abuse
@@ -23,6 +24,8 @@ robbery
 dead
 riot
 assassinate
+behead
+knife
 terminate
 gang
 drug
