@@ -79,6 +79,9 @@ def file_checker():
                 path = os.path.realpath(file)  # to get file path
                 ext = os.path.splitext(path)[1]
 
+                obtainduration = AudioSegment.from_file(path)
+                fileduration = obtainduration.duration_seconds
+
                 ext.lower()
                 if ext != '.wav':
                     try:
@@ -164,6 +167,9 @@ def file_checker():
         path = os.path.realpath(arg.r)  # to get file path
         ext = os.path.splitext(path)[1]
         ext.lower()
+
+        obtainduration = AudioSegment.from_file(path)
+        fileduration = obtainduration.duration_seconds
 
         # If file is not wav file and txt file, perform conversion first
         # As long as audio ext is supported by ffmpeg, the audio file can be converted to wav
@@ -390,8 +396,8 @@ def get_metadata(file):
     # pydub lib - printing information from Metatags
     metadata = mediainfo(file)
     # retrieve file duration to determine whether file minimizing has to be done
-    global fileduration  # Set to global variable so that we can access it in the filechecker function
-    fileduration = metadata['duration']
+    # global fileduration  # Set to global variable so that we can access it in the filechecker function
+    # fileduration = metadata['duration']
     # Write metadata information into a text file & specify utf-8 encoding to prevent anyawy encoding issues || utf-8 selected since it can handle all the chars
     # https://stackoverflow.com/questions/16346914/python-3-2-unicodeencodeerror-charmap-codec-cant-encode-character-u2013-i
     with open("%s/%s_metadata.txt" % (os.getcwd(), file), 'w', encoding='utf-8') as textfile:
