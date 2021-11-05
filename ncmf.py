@@ -172,14 +172,16 @@ def file_checker():
                 anotherfile = AudioSegment.from_file(arg.r)
                 convertedFile = anotherfile.export("%s_converted.wav" % arg.r, format="wav")
                 get_metadata(arg.r)
+                #print(convertedFile)
                 if float(fileduration) > 60.0:  # if the duration is more than 60sec, split to chunks
-                    largefile_minmiser(convertedFile)
+                    largefile_minmiser(convertedFile.name)
 
                 else:
                     # Call transcription function
                     print("converting file...")
                     converter(convertedFile)
             except Exception as e:
+                print(e)
                 print("Error! Inputted file is not a valid audio file.")
                 return
 
@@ -286,8 +288,12 @@ def largefile_minmiser(audiofile):
     myaudio = AudioSegment.from_file(audiofile)
     chunk_length_ms = 60000  # pydub calculates in millisec (i have changed it to one minute)
     chunks = make_chunks(myaudio, chunk_length_ms)  # Make chunks of one minute, basically just divide
-    global filename_m  # this variable will be used by concate_chunks if user use -m in script
+    global filename_m  # this variable will be used by concate_chunks
+    
+    #print("Explicit argument provided for this function:",audiofile)
+    #print("parsed audio:",audiofile.name)
     filename_m = audiofile
+    #print("trying to replace audio file: ", audiofile.name)
     filename_forchunk = filename_m.replace('.wav','')
     # Export all of the individual chunks as wav files
     print('\n')
