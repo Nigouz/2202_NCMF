@@ -14,9 +14,9 @@ This tool is designed to provide translation of Speech to Text and Image to Text
 7. Install latest verison of FFMPEG from https://www.gyan.dev/ffmpeg/builds/
 8. Install Tesseract from https://github.com/UB-Mannheim/tesseract/wiki 
 
-# Note:
-1 Add Tesseract installation path to your computer System Environment path
-2 Replace the Tesseract path in the code with your own installation path
+# Note
+1. Add Tesseract installation path to your computer System Environment path
+2. Replace the Tesseract path in the code with your own installation path
 
 # How to Use
 (put the link to the user manual)
