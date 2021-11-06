@@ -31,7 +31,7 @@ def arg_parser():
     parser = ArgumentParser(description="For more information regarding o options, please run 'ncmf.py o -h' ")
     parser.add_argument('-r', type=str, help="Specify audio file for conversion")
     parser.add_argument('-i', type=str, help="Specify image file for OCR")
-    parser.add_argument('-s', type=str, default="sus.txt", help="Specify your own suspicious word list text file")
+    parser.add_argument('-s', type=str, default="default_sus_list.txt", help="Specify your own suspicious word list text file")
     parser.add_argument('-m', type=str, help="Specify your foldername containing audio files")
     parser.add_argument('-n', default=3, type=int, help="Specify number of top words you wish to list")
 
