@@ -324,6 +324,7 @@ def largefile_minmiser(audiofile):
 
 
 # Function to count the most number of common words that appeared in the audio file
+# Accepts the file name and a number for top common words
 def counter(filename, number):
     while True:
         try:
@@ -332,11 +333,14 @@ def counter(filename, number):
             words = []
             with open(filename, 'r', encoding='utf-8') as f:
                 for line in f:
+                    # splits all the texts and put it in a list 
                     words.extend(line.split())
-
+            
+            # use Counter module
             counts = Counter(words)
             with open(filename, 'a', encoding='utf-8') as counted:
                 counted.write("\n\nTOP " + str(number) + " MOST COMMON WORDS:")
+                # append to the file
                 for key, value in counts.most_common(number):
                     counted.write("\n")
                     counted.write(key)
@@ -383,12 +387,13 @@ def sus_words(filename):
     for i in range(len(words_list)):
         words_list[i] = words_list[i].lower()
 
-    with open(filename, 'a', encoding='utf-8') as add:
-        add.write("\n\n" + "Suspicious words found: \n")
+    with open(filename, 'a', encoding='utf-8') as f:
+        f.write("\n\n" + "Suspicious words found: \n")
+    # for every word in sus list, if found in the word list append to the file
     for i in sus_list:
         if i in words_list:
-            with open(filename, 'a') as add:
-                add.write(i + "\n")
+            with open(filename, 'a') as f:
+                f.write(i + "\n")
 
     print("\nThank you for using NCMF's Audio/Image Analyser")
 
@@ -525,6 +530,7 @@ def save_info(text):
 
 
 def metadata_img(filename):
+    # using image module to obtain the exif of the image
     image = Image.open(filename)
     exifdata = image.getexif()
 
@@ -532,6 +538,7 @@ def metadata_img(filename):
         print("No metadata found! :(")
         return
 
+    # obtain all the exif data found and decode it to append in a file 
     for tag_id in exifdata:
         tag = TAGS.get(tag_id, tag_id)
         data = exifdata.get(tag_id)
