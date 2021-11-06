@@ -145,6 +145,7 @@ def file_checker():
             if ext == '.txt':
                 counter(arg.a, arg.n)
                 sus_words(arg.a)
+                print("Count and search have been completed! Results has been appended onto the original file.")
 
         elif arg.b:
             path = os.path.realpath(arg.b)  # to get file path
@@ -152,6 +153,7 @@ def file_checker():
             ext.lower()
             if ext == '.txt':
                 counter(arg.b, arg.n)
+                print("Count and search have been completed! Results has been appended onto the original file.")
 
         elif arg.c:
             path = os.path.realpath(arg.c)  # to get file path
@@ -159,6 +161,7 @@ def file_checker():
             ext.lower()
             if ext == '.txt':
                 sus_words(arg.c)
+                print("Count and search have been completed! Results has been appended onto the original file.")
 
     # if user is parsing an audio file for conversion
     if arg.r:
