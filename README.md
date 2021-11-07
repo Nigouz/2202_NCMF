@@ -1,7 +1,7 @@
 <h1 align="center">2202_NCMF</h1>
 
 # Project Description
-NCMF's Audio/Image Analyzer is designed to provide transcription of Speech to Text and Image to Text. It is a simple to use tool and can be used by anyone.
+NCMF's Audio/Image Analyzer is designed to provide transcription of Speech to Text and Image to Text. It is a simple tool to use which can be utilized by anyone.
 
 
 # Installation Guide for Dependencies
