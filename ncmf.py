@@ -571,8 +571,8 @@ def logo():
     print("# python ncmf.py -m foldername")
     print("--------------------------------------")
     print("*Note: No metadata will be returned for a non jpg file\n")
-    print("*Warning: For analysing text file, results will be append onto your text file which will affect data integrity \n")
-    print("*Warning: Please take the necessarily precautions when using text function\n")
+    print("*Warning: For analysing text files, results will be appended onto your text file which will affect data integrity \n")
+    print("*Warning: Please take the necessary precautions when using the text function\n")
 
 def main():
     logo()
