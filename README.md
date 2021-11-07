@@ -17,7 +17,7 @@ This tool is designed to provide translation of Speech to Text and Image to Text
 10. Replace the Tesseract path in the code with your own installation path at line 16 of ncmf.py
 
 # How to Use
-(put the link to the user manual)
+[a relative link] 
 
 # Built With 
 - Python
