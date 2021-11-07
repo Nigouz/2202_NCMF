@@ -28,7 +28,7 @@ https://www.youtube.com/watch?v=UntsOWotDJM
 
 
 
-*This project is done by a group of SIT (Singapore Institute of Technology) Information Security Year 2 Students. The team consist of: 
+# This project is done by a group of SIT (Singapore Institute of Technology) Information Security Year 2 Students. The team consist of: 
 
 **Chong Fu Min**
 
