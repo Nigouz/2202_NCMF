@@ -3,7 +3,6 @@
 # Project Description
 NCMF's Audio/Image Analyzer is designed to provide translation of Speech to Text and Image to Text. It is a simple to use tool and can be use by anyone.
 
-*Note: Pydub is used for the conversion of different extension to .wav & it uses FFMPEG, a framework to capture, decode, mainipulate
 
 # Installation Guide for Dependencies
 1. pip install SpeechRecognition
