@@ -13,10 +13,8 @@ This tool is designed to provide translation of Speech to Text and Image to Text
 6. pip install Pillow
 7. Install latest verison of FFMPEG from https://www.gyan.dev/ffmpeg/builds/
 8. Install Tesseract from https://github.com/UB-Mannheim/tesseract/wiki 
-
-# Note
-1. Add Tesseract installation path to your computer System Environment path
-2. Replace the Tesseract path in the code with your own installation path at line 16 of ncmf.py
+9. Add Tesseract installation path to your computer System Environment path
+10. Replace the Tesseract path in the code with your own installation path at line 16 of ncmf.py
 
 # How to Use
 (put the link to the user manual)
