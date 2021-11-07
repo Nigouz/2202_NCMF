@@ -12,11 +12,6 @@ import csv
 from PIL import Image
 from PIL.ExifTags import TAGS
 
-colors = {'HEADER': "\033[95m",
-          'YELLOW': "\033[93m",
-          'LIGHTBLUE': "\033[96m",
-          'END': "\033[0m"}
-
 # Amend file path according to where you have installed tesseract.exe
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
@@ -179,7 +174,6 @@ def file_checker():
                 anotherfile = AudioSegment.from_file(arg.r)
                 convertedFile = anotherfile.export("%s_converted.wav" % arg.r, format="wav")
                 get_metadata(arg.r)
-                # print(convertedFile)
                 if float(fileduration) > 60.0:  # if the duration is more than 60sec, split to chunks
                     largefile_minmiser(convertedFile.name)
 
@@ -273,12 +267,9 @@ def concate_chunks():
     filename = filename_m + ".txt"  # whatever file name pass to largefileminimiser will be pass here
     print("\nTranslating now . . . ")
     with open(filename, "a", encoding="utf-8") as combineFile:
-        # combineFile.write("Transcripted Text:\n")
         for x in listofchunks_To_translated:  # list of chunks is all the chunk filename created
             with open(x) as infile:
                 contents = infile.read()
-                # combineFile.write("Chunk: "+ x)
-                # combineFile.write("\n")
                 combineFile.write(contents.lower())
                 combineFile.write(" ")
     if arg.r:
@@ -298,10 +289,7 @@ def largefile_minmiser(audiofile):
     chunks = make_chunks(myaudio, chunk_length_ms)  # Make chunks of one minute, basically just divide
     global filename_m  # this variable will be used by concate_chunks
 
-    # print("Explicit argument provided for this function:",audiofile)
-    # print("parsed audio:",audiofile.name)
     filename_m = audiofile
-    # print("trying to replace audio file: ", audiofile.name)
     filename_forchunk = filename_m.replace('.wav', '')
     # Export all of the individual chunks as wav files
     print('\n')
@@ -320,9 +308,6 @@ def largefile_minmiser(audiofile):
         listofchunks.append(chunk_name)
         listofchunks_To_translated.append(chunk_name + "_translated.txt")
     converter_chunks()
-    # print(filename) = "bravestfish" without extension
-    # print(chunk_name) = "bravestfish_chunk1.wav"
-
 
 # Function to count the most number of common words that appeared in the audio file
 # Accepts the file name and a number for top common words
