@@ -15,8 +15,6 @@ NCMF's Audio/Image Analyzer is designed to provide transcription of Speech to Te
 9. Add Tesseract installation path to your computer System Environment path
 10. Replace the Tesseract path in the code with your own installation path at line 16 of ncmf.py
 
-![alt text](https://github.com/Niouz/2202_NCMF/blob/9343eeedd0780a80fe176955c2bfacc304e57358/screenshot of line 16/line 16.png?raw=true)
-
 
 # How to Use
 <a href="https://github.com/Nigouz/2202_NCMF/blob/9343eeedd0780a80fe176955c2bfacc304e57358/UserManual.pdf"> User Manual </a>
