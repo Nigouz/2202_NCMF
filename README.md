@@ -1,7 +1,7 @@
 <h1 align="center">2202_NCMF</h1>
 
 # Project Description
-This tool is designed to provide translation of Speech to Text and Image to Text. It is a simple to use tool and can be use by anyone.
+NCMF's Audio/Image Analyzer is designed to provide translation of Speech to Text and Image to Text. It is a simple to use tool and can be use by anyone.
 
 *Note: Pydub is used for the conversion of different extension to .wav & it uses FFMPEG, a framework to capture, decode, mainipulate
 
