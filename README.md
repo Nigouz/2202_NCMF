@@ -29,10 +29,9 @@ https://www.youtube.com/watch?v=UntsOWotDJM
 
 This project is done by a group of SIT (Singapore Institute of Technology) Information Security Year 2 Students. The team consist of: 
 
+**Nicole Tan Yi Jing**
+**Crystal Choo Jia Xian**
+**Marissa Krystle Tambou**
 **Chong Fu Min**
 
-**Crystal Choo Jia Xian**
 
-**Marissa Krystle Tambou**
-
-**Nicole Tan Yi Jing**
