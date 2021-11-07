@@ -16,7 +16,7 @@ NCMF's Audio/Image Analyzer is designed to provide transcription of Speech to Te
 10. Replace the Tesseract path in the code with your own installation path at line 16 of ncmf.py
 
 # How to Use
-[a relative link] 
+UserManual.pdf 
 
 # Built With 
 - Python
