@@ -16,7 +16,7 @@ This tool is designed to provide translation of Speech to Text and Image to Text
 
 # Note
 1. Add Tesseract installation path to your computer System Environment path
-2. Replace the Tesseract path in the code with your own installation path
+2. Replace the Tesseract path in the code with your own installation path at line 16 of ncmf.py
 
 # How to Use
 (put the link to the user manual)
