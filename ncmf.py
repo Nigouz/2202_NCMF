@@ -280,6 +280,7 @@ def concate_chunks():
                 # combineFile.write("Chunk: "+ x)
                 # combineFile.write("\n")
                 combineFile.write(contents.lower())
+                combineFile.write(" ")
     if arg.r:
         print("\n%s has been transcribed successfully, %s is at:" % (arg.r, filename), os.getcwd())
         counter(filename, 3)
